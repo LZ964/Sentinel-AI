@@ -23,13 +23,13 @@ class SentinelNativeBridge {
   }
 
   /**
-   * Modifie le statut du pare-feu pour une application via le VpnService Kotlin
+   * Modifies the firewall status for an application via the Kotlin VpnService
    */
   public setFirewallAppStatus(packageName: string, status: 'allowed' | 'blocked'): void {
     if (typeof window !== 'undefined' && window.AndroidBridge && window.AndroidBridge.setAppStatus) {
       window.AndroidBridge.setAppStatus(packageName, status);
     } else {
-      console.warn(`[Bridge] Production: La modification des règles du pare-feu nécessite l'API native.`);
+      console.warn(`[Bridge] Production: Modifying firewall rules requires the native API.`);
     }
   }
 
@@ -37,7 +37,7 @@ class SentinelNativeBridge {
     if (typeof window !== 'undefined' && window.AndroidBridge && window.AndroidBridge.enableFirewall) {
       window.AndroidBridge.enableFirewall(enabled);
     } else {
-      console.warn(`[Bridge] Production: La fonctionnalité Pare-feu nécessite l'API VpnService native. Impossible de l'activer.`);
+      console.warn(`[Bridge] Production: The Firewall functionality requires the native VpnService API. Unable to activate it.`);
     }
   }
 
@@ -84,7 +84,7 @@ class SentinelNativeBridge {
            window.onNativeError = onError;
            window.AndroidBridge.startNativeScan();
         } else {
-           onError("Erreur d'initialisation du scanner natif: " + e.message);
+           onError("Native scanner initialization error: " + e.message);
         }
     }
   }

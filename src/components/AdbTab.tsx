@@ -35,7 +35,7 @@ export default function AdbTab() {
       window.AndroidBridge.analyzeAdbLogs(anomaly.rawText, anomaly.id);
     } else {
       setTimeout(() => {
-        setAnomalies(prev => prev.map(a => a.id === anomaly.id ? { ...a, diagnostic: "Erreur : NativeBridge indisponible, analyse en environnement web impossible.", isAnalyzing: false } : a));
+        setAnomalies(prev => prev.map(a => a.id === anomaly.id ? { ...a, diagnostic: "Error: NativeBridge unavailable, analysis in web environment impossible.", isAnalyzing: false } : a));
       }, 500);
     }
   };

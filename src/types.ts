@@ -6,7 +6,7 @@ export interface UpstreamVulnerability {
   description: string;
   upstream_status: string;
   affected_hardware?: string;
-  patched_in_date: string; // Format YYYY-MM-DD pour la soustraction logique
+  patched_in_date: string; // Format YYYY-MM-DD for logical subtraction
 }
 
 export interface VulnerabilityResult {

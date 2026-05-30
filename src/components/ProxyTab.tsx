@@ -42,7 +42,7 @@ export default function ProxyTab() {
       setActiveProxy('tor');
     } catch(e) {
       console.error(e);
-      setTorLogs(prev => [...prev, "Erreur (Production): Le démon natif Tor n'est pas disponible ou accessible."]);
+      setTorLogs(prev => [...prev, "Error (Production): The native Tor daemon is not available or accessible."]);
       setTorStatus('error');
     }
   };
@@ -370,7 +370,7 @@ export default function ProxyTab() {
                              type: 'error', 
                              text: isAccountValid 
                                ? "Le compte est valide, mais WireGuard n'est pas supporté dans cet environnement." 
-                               : "Erreur fatale: API Mullvad inaccessible et aucune interface réseau native disponible." 
+                               : "Fatal error: Mullvad API unreachable and no native network interface available." 
                            });
                            return; // STOP EXECUTION, STRICTLY PROHIBIT SIMULATION
                         }
@@ -458,17 +458,17 @@ export default function ProxyTab() {
               <div className="mt-8 flex flex-col items-center w-full max-w-lg motion-preset-fade">
                 <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-xl text-center w-full mb-4">
                   <CheckCircle2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                  <h4 className="text-green-400 font-bold text-lg">Système Sécurisé</h4>
-                  <p className="text-green-400/80 text-xs mt-1">Aucune fuite détectée. Le Kill Switch garantit l'étanchéité du tunnel.</p>
+                  <h4 className="text-green-400 font-bold text-lg">Secure System</h4>
+                  <p className="text-green-400/80 text-xs mt-1">No leaks detected. Default Kill Switch ensures tunnel isolation.</p>
                 </div>
                 
                 <div className="bg-cyan-900/20 border border-cyan-500/30 p-4 rounded-xl w-full text-left relative">
                    <div className="absolute -top-3 -left-3 bg-cyan-500/20 border border-cyan-400/50 p-1.5 rounded-full backdrop-blur-md">
                      <Sparkles className="w-4 h-4 text-cyan-400" />
                    </div>
-                   <h5 className="text-cyan-300 font-bold text-sm mb-2 ml-2">Analyse de l'IA (Sentinel)</h5>
+                   <h5 className="text-cyan-300 font-bold text-sm mb-2 ml-2">AI Analysis (Sentinel)</h5>
                    <p className="text-slate-300 text-xs leading-relaxed ml-2">
-                     Votre configuration est optimale. Votre trafic est correctement chiffré et routé, ce qui masque votre IP réelle à votre fournisseur d'accès et aux sites visités. Gardez simplement à l'esprit qu'il s'agit d'un audit de configuration locale visant la confidentialité au quotidien ; aucune protection logicielle ne garantit un anonymat absolu face à des cyberattaques très avancées, bien que votre sécurité actuelle soit de très haut niveau.
+                     Your configuration is optimal. Your traffic is correctly encrypted and routed, hiding your real IP. Keep in mind this is a local configuration audit aimed at daily privacy.
                    </p>
                 </div>
                 
@@ -481,16 +481,16 @@ export default function ProxyTab() {
                 <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl text-center w-full mb-4">
                   <AlertTriangle className="w-8 h-8 text-rose-500 mx-auto mb-2" />
                   <h4 className="text-rose-500 font-bold text-lg">Statut : Non Anonymisé (Direct)</h4>
-                  <p className="text-rose-500/80 text-xs mt-1">La connexion est directe et aucune route sécurisée n'est établie.</p>
+                  <p className="text-rose-500/80 text-xs mt-1">The connection is direct and no secure route is established.</p>
                 </div>
 
                 <div className="bg-cyan-900/20 border border-cyan-500/30 p-4 rounded-xl w-full text-left relative">
                    <div className="absolute -top-3 -left-3 bg-cyan-500/20 border border-cyan-400/50 p-1.5 rounded-full backdrop-blur-md">
                      <Sparkles className="w-4 h-4 text-cyan-400" />
                    </div>
-                   <h5 className="text-cyan-300 font-bold text-sm mb-2 ml-2">Analyse de l'IA (Sentinel)</h5>
+                   <h5 className="text-cyan-300 font-bold text-sm mb-2 ml-2">AI Analysis (Sentinel)</h5>
                    <p className="text-slate-300 text-xs leading-relaxed ml-2">
-                     L'audit est clair : vous n'utilisez ni VPN ni relais réseau. Votre adresse IP et vos requêtes non-chiffrées sont visibles par votre opérateur internet. Il s'agit du comportement standard d'une connexion internet, vos communications sécurisées par site (HTTPS) restent privées. Cependant, pour éviter le pistage publicitaire ou la collecte de métadonnées, je vous recommande d'activer un VPN dès que vous manipulez des données que vous souhaitez garder confidentielles.
+                     The audit is clear: you are using neither VPN nor network relays. Your IP address is visible to your ISP. This is standard behavior, but consider using a VPN for better privacy.
                    </p>
                 </div>
 

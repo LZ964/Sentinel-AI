@@ -11,10 +11,10 @@ if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
 }
 
 // Prompt système pour l'analyse des applications (ajouté suite à la configuration)
-export const SENTINEL_APPS_PROMPT = `Tu es le moteur d'analyse de sécurité IA intégré à l'application Sentinel. Tu es un spécialiste en cybersécurité passionné par la sécurité sur Android et Chrome OS. L'appareil ciblé n'est JAMAIS un serveur web.
-Ta fonction est d'analyser la liste des applications et l'appareil d'un utilisateur, et de trouver et expliquer aux gens, d'une façon vulgarisée mais concise, si un élément représente une faille de sécurité importante, une vulnérabilité du cellulaire Android ou du Chromebook (Chrome OS), ou encore si c'est un simple faux positif / un comportement normal.
+export const SENTINEL_APPS_PROMPT = `You are the AI security analysis engine integrated into the Sentinel application. You are a cybersecurity specialist passionate about Android and Chrome OS security. The target device is NEVER a web server.
+Your function is to analyze the user's application list and device, and to find and explain to people, in a popularized but concise way, whether an element represents a significant security flaw, a vulnerability on an Android phone or Chromebook, or if it's simply a false positive / normal behavior.
 
-Pour chaque application suspecte détectée, tu dois fournir une analyse rigoureuse et retourner STRICTEMENT un objet JSON (ou un tableau d'objets s'il y en a plusieurs) contenant les clés suivantes :
+For each suspicious application detected, you must provide a rigorous analysis and return STRICTLY a JSON object (or an array of objects if multiple) containing the following keys:
 1. "appName": Le nom de l'application.
 2. "packageName": Le nom de paquet Android (ex: com.example.app).
 3. "riskLevel": "Élevé", "Modéré", "Faible", ou "Faux Positif".
@@ -22,11 +22,11 @@ Pour chaque application suspecte détectée, tu dois fournir une analyse rigoure
 5. "canAutomate": Un booléen (true/false) indiquant s'il est techniquement possible pour Sentinel de lancer une action de correction (ex: désinstallation).
 6. "automationAction": L'action automatique à lancer ("REVOKE_PERMISSION", "UNINSTALL_APP" ou null).
 7. "androidDeepLink": L'URI d'intention Android exact pour ouvrir la fiche de l'application : "intent:#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;data=package:[packageName];end"
-8. "userFriendlyWarning": Un texte court, vulgarisé mais concis (style spécialiste passionné mais accessible) expliquant clairement si c'est une faille, un risque ou un faux positif.
+8. "userFriendlyWarning": A short, popularized but concise text explaining clearly if it's a flaw, a risk, or a false positive.
 
 Contrainte stricte : Réponds exclusivement au format JSON. Pas de texte explicatif avant ou après le bloc JSON.`;
 
-export const SENTINEL_REPORT_PROMPT = `Tu es le moteur d'analyse de vulnérabilités de bas niveau de l'application "Sentinel AI", un spécialiste en cybersécurité mobile. Ton rôle est d'analyser les données réelles fournies (CVEs Linux Upstream, librairies Android) filtrées selon le processeur de l'appareil et sa date de correctif de sécurité, pour générer le rapport d'audit final.
+export const SENTINEL_REPORT_PROMPT = `You are the low-level vulnerability analysis engine of the 'Sentinel AI' application, a mobile cybersecurity specialist. Your role is to analyze provided real data (Linux Upstream CVEs, Android libraries) filtered by device processor and security patch date, to generate the final audit report.
 
 [CONTRAINTE DE SORTIE - JSON STRICT]
 Tu dois OBLIGATOIREMENT retourner un objet JSON valide, strict, sans AUCUN markdown (pas de \`\`\`json) ni texte avant/après. Le JSON doit respecter ce schéma :
@@ -63,11 +63,11 @@ Tu dois OBLIGATOIREMENT retourner un objet JSON valide, strict, sans AUCUN markd
 ### DIRECTIVES D'ANALYSE :
 1. "architectural_risk_score" doit être un nombre entre 0 et 100 calculé selon les données fournies en entrée. Plus il y a de CVEs fournies non corrigées, plus ce score de risque s'approche de 100.
 2. Formule "device_summary" à partir des données exactes transmises en entrée.
-3. Ne génère pas de fausses failles : s'il n'y a pas de vulnérabilité, laisse les tableaux vides ([]). Prends uniquement en compte les CVEs ("systemCVEs") qui te sont envoyées en entrée, car elles ont déjà été dynamiquement filtrées pour correspondre au matériel de l'utilisateur.`;
+3. Do not generate fake flaws: if there are no vulnerabilities, leave arrays empty ([]). Limit to the CVEs sent as input.`;
 
-export const SENTINEL_FIREWALL_PROMPT = `Tu es le moteur de décision et d'orchestration de sécurité de l'application Sentinel. Ton rôle est de statuer sur les requêtes d'accès réseau des applications Android et de générer la réponse appropriée pour l'interface utilisateur, selon la configuration du pare-feu et des options réseau.
+export const SENTINEL_FIREWALL_PROMPT = `You are the security orchestration engine of the Sentinel application. Your role is to rule on network access requests of Android apps and generate the appropriate response for the user interface, according to the firewall configuration and network options.
 
-Tu recevras en entrée les paramètres de configuration actuels de Sentinel ainsi que les détails de l'application qui demande un accès réseau (notamment si l'adresse IP de destination est locale ou externe).
+You will receive the current configuration parameters of Sentinel as input along with the details of the app requesting network access.
 
 Règles de filtrage du trafic local (LAN) :
 - Les adresses IP locales incluent les plages standard : 192.168.x.x, 10.x.x.x, 172.16.x.x à 172.31.x.x, ainsi que l'adresse de bouclage local (localhost/127.0.0.1).
@@ -250,7 +250,7 @@ export class LocalAIService {
           if (Array.isArray(parsed)) results.push(...parsed);
           else results.push(parsed);
         } else {
-          onDetail("Erreur de parsing (réponse non-JSON).", "error");
+          onDetail("Parsing error (non-JSON response).", "error");
         }
       } catch (e: any) {
         onDetail(`Échec inférence CoreAI: ${e.message}`, "error");
@@ -258,7 +258,7 @@ export class LocalAIService {
     } else if (this.instance) {
       try {
         onDetail("Interrogation LaMini localement...", "action");
-        const prompt = `System: ${SENTINEL_APPS_PROMPT}\n\nUser: Analyse ces applications:\n${appsStr}\n\nAssistant: [\n  {`;
+        const prompt = `System: ${SENTINEL_APPS_PROMPT}\n\nUser: Analyze these applications:\n${appsStr}\n\nAssistant: [\n  {`;
         const out = await this.instance(prompt, { max_new_tokens: 350 });
         let textOut = "[\n  {" + (out[0]?.generated_text || "");
 
@@ -338,7 +338,7 @@ export class LocalAIService {
 
     if (this.instance) {
       try {
-        const prompt = `System: ${SENTINEL_FIREWALL_PROMPT}\n\nUser: Analyse la requête réseau interceptée:\n${payloadString}\n\nAssistant: {`;
+        const prompt = `System: ${SENTINEL_FIREWALL_PROMPT}\n\nUser: Analyze the intercepted network request:\n${payloadString}\n\nAssistant: {`;
         const out = await this.instance(prompt, { max_new_tokens: 300 });
         let textOut = "{" + (out[0]?.generated_text || "");
 
@@ -413,7 +413,7 @@ export class LocalAIService {
 
     onDetail(`Taille: ${JSON.stringify(analysisPayload).length} octets\nType de moteur: ${this.instance ? "transformers/moteur-local" : typeof window !== "undefined" && "ai" in window ? "native-webai" : "heuristic_fallback"}\nHors ligne: true`, "raw");
 
-    onDetail(`[IA] Analyse du contexte matériel: ${deviceLabel}`, "success");
+    onDetail(`[AI] Hardware context analysis: ${deviceLabel}`, "success");
 
     let results: any[] = [];
     let aiParsedOutput: any = null;
@@ -579,7 +579,7 @@ export class LocalAIService {
           description: cve.detail || cve.description || "",
           concept: cve.layer || "Couche système vulnérable",
           updateStatus: cve.upstream_status || "Non corrigé",
-          mitigation: "Appliquer les mises à jour système dans les Paramètres sous 'Mise à jour de sécurité'.",
+          mitigation: "Apply system updates in Settings under 'Security Update'.",
         });
       });
     }
@@ -597,10 +597,10 @@ export class LocalAIService {
         title: "Version OS potentiellement obsolète",
         severity: "HIGH",
         impact: "Vulnérabilités connues non corrigées",
-        description: `Cet appareil (${deviceLabel}) exécute la version OS ${osStr}, qui est antérieure à la version recommandée (14+), ce qui l'expose à des failles de sécurité documentées.`,
+        description: `This device (${deviceLabel}) runs OS version ${osStr}, which is earlier than the recommended version (14+), exposing it to documented security flaws.`,
         concept:
           "Les systèmes non mis à jour manquent des correctifs critiques contre les attaques.",
-        updateStatus: "Vérifiez les paramètres pour une mise à jour système.",
+        updateStatus: "Check settings for a system update.",
         mitigation: "Mettre à jour vers la dernière version.",
       });
     } else {
@@ -614,10 +614,10 @@ export class LocalAIService {
       cveId: "LOCAL-CHK-01",
       title: "Intégrité du Sandboxing (Bac à sable)",
       severity: "INFO",
-      impact: "Architecture Sécurisée",
-      description: `Analyse de l'environnement: L'application est correctement isolée par le système d'exploitation (${realData.appInfo ? "Native App" : "Navigateur Chrome"}). Les ressources matérielles (coeurs: ${realData.webEnvironment?.hardwareConcurrency}) sont allouées de façon sécurisée.`,
+      impact: "Secure Architecture",
+      description: `Environment analysis: The application is properly isolated by the OS (${realData.appInfo ? 'Native App' : 'Chrome Browser'}). Hardware resources are securely allocated.`,
       concept:
-        "Faux Positif / Informatif : Ce n'est pas une faille. Le mode 'sandbox' est une excellente pratique d'Android/Chrome OS qui empêche les applications d'accéder au reste du système sans permission.",
+        "False Positive / Informative: This is not a flaw. Sandbox mode is an excellent Android/Chrome OS practice.",
       updateStatus: "Confinement actif et valide.",
       mitigation:
         "Information : Votre appareil bloque correctement les accès non autorisés inter-applications.",
@@ -625,7 +625,7 @@ export class LocalAIService {
     onDetail(">> Exposition Sandbox documentée (INFO)", "info");
 
     onDetail("> network_tls_inspection", "action");
-    onDetail(`Sécurité En-têtes Originels: ${realData.securityHeaders ? "Présent" : "Absent"}\nProtocole HTTP: ${window.location.protocol}`, "raw");
+    onDetail(`Original Security Headers: ${realData.securityHeaders ? 'Present' : 'Absent'}\nProtocole HTTP: ${window.location.protocol}`, "raw");
 
     if (realData.securityHeaders && !realData.securityHeaders.error) {
       if (!realData.securityHeaders.hsts) {
@@ -645,17 +645,17 @@ export class LocalAIService {
       }
     } else {
       onDetail(
-        ">> Échec de vérification des headers de sécurité d'origine",
+        ">> Failed to verify origin security headers",
         "warning",
       );
     }
 
     onDetail("> http_protocol_audit", "action");
-    onDetail(`Contexte HTTP Sécurisé: ${isSecure}\nCookies Actifs: ${realData.securityContext?.cookiesEnabled}\nProtocole: ${window.location.protocol}`, "raw");
+    onDetail(`Secure HTTP Context: ${isSecure}\nActive Cookies: ${realData.securityContext?.cookiesEnabled}\nProtocole: ${window.location.protocol}`, "raw");
 
     if (!isSecure) {
       onDetail(
-        ">> Contexte HTTP non crypté (Ignoré pour la sécurité système)",
+        ">> Unencrypted HTTP context (Ignored for system security)",
         "warning",
       );
     } else {
@@ -680,7 +680,7 @@ export class LocalAIService {
         "Les informations de rendu matériel permettent l'empreinte digitale (fingerprinting).",
       updateStatus: "Défaut d'API Web standard",
       mitigation:
-        "Bloquer l'API WebGL si elle n'est pas strictement nécessaire.",
+        "Block the WebGL API if it is not strictly necessary.",
     });
     onDetail(">> Vulnérabilité Fingerprint documentée (LOW)", "info");
     
@@ -690,7 +690,7 @@ export class LocalAIService {
     const timeSpentMs = Math.round(perfEnd - perfStart);
 
     onDetail("--- FIN DE L'ANALYSE IA ---", "warning");
-    onDetail(`Failles détectées: ${results.length}\nTemps d'exécution: ${timeSpentMs}ms\nMode de vérification: strict`, "raw");
+    onDetail(`Vulnerabilities detected: ${results.length}\nExecution time: ${timeSpentMs}ms\nVerification mode: strict`, "raw");
 
     return {
       logs: [

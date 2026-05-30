@@ -22,7 +22,7 @@ export class RealScanner {
                console.warn(`Rate limit NVD, retry ${i+1}/${retries}...`);
                await this.delay(backoff * (i + 1));
            } else {
-               throw new Error(`Erreur HTTP ${resp.status}`);
+               throw new Error(`HTTP Error ${resp.status}`);
            }
        } catch (error) {
            if (i === retries - 1) throw error;
@@ -43,13 +43,13 @@ export class RealScanner {
         throw new Error("L'appareil n'est pas sous Android.");
     }
     if (!info.osVersion) {
-        throw new Error("Version de l'OS introuvable.");
+        throw new Error("OS Version not found.");
     }
        
-    // Analyse dynamique et précise de la version OS (supporte 13, 8.1, etc.)
+    // Dynamic and precise OS version analysis (supports 13, 8.1, etc.)
     const getOsVersion = (v: string) => {
         const m = v.match(/^(\d+(?:\.\d+)?)/); 
-        if (!m) return "1.0"; // Fallback par défaut
+        if (!m) return "1.0"; // Default fallback
         const parsed = m[1];
         return parsed.includes('.') ? parsed : `${parsed}.0`;
     };
@@ -61,7 +61,7 @@ export class RealScanner {
 
     let nvdVulns: UpstreamVulnerability[] = [];
     
-    // Utilisation de virtualMatchString pour autoriser la correspondance partielle sur le NVD
+    // Use virtualMatchString to allow partial matching on NVD
     const url = `https://services.nvd.nist.gov/rest/json/cves/2.0?virtualMatchString=${androidCpe}`;
     
     const nvdData = await this.fetchWithRetry(url);
@@ -72,7 +72,7 @@ export class RealScanner {
         if (!cve.published) return acc; 
         
         const descObj = cve.descriptions?.find((d:any) => d.lang === "en") || cve.descriptions?.[0];
-        const description = descObj ? descObj.value : "Aucune description disponible.";
+        const description = descObj ? descObj.value : "No description available.";
         
         const metrics = cve.metrics?.cvssMetricV40?.[0] || cve.metrics?.cvssMetricV31?.[0] || cve.metrics?.cvssMetricV30?.[0];
         const cvssScore = metrics?.cvssData?.baseScore || 0;
@@ -142,9 +142,9 @@ export class RealScanner {
     }
     
     if (securityPatch) {
-        onLog(`Patch détecté : ${securityPatch}`);
+        onLog(`Patch detected: ${securityPatch}`);
     } else {
-        onLog(`ATTENTION : Impossible de détecter le niveau de patch de sécurité.`, "error");
+        onLog(`WARNING: Impossible to detect the security patch level.`, "error");
     }
     findings.securityPatch = securityPatch;
 
@@ -153,8 +153,8 @@ export class RealScanner {
     try {
         await this.syncCveDatabase(); 
     } catch (e) {
-        onLog(`[!] ERREUR API : ${(e as Error).message}`, "error");
-        onLog("L'audit utilise les données en cache (si existantes).", "error");
+        onLog(`[!] API ERROR: ${(e as Error).message}`, "error");
+        onLog("The audit uses cached data (if existing).", "error");
     }
 
     let matchedCves: (UpstreamVulnerability & { is_mitigated?: boolean })[] = [];
@@ -176,9 +176,9 @@ export class RealScanner {
     }
     
     if (activeVulnerabilitiesCount === 0) {
-      onLog(`[+] Votre appareil semble à jour. Les vulnérabilités connues sont couvertes par votre patch de sécurité.`);
+      onLog(`[+] Your device seems up to date. Known vulnerabilities are covered by your security patch.`);
     } else {
-      onLog(`[!] Attention: ${activeVulnerabilitiesCount} vulnérabilité(s) potentiellement actives trouvées.`);
+      onLog(`[!] Warning: ${activeVulnerabilitiesCount} potentially active vulnerabilities found.`);
     }
 
     findings.systemCVEs = matchedCves;
@@ -189,7 +189,7 @@ export class RealScanner {
       cookiesEnabled: navigator.cookieEnabled
     };
 
-    onLog("=== FIN DU RAPPATRIEMENT DE DONNÉES ===");
+    onLog("=== END OF DATA RETRIEVAL ===");
 
     return findings;
   }

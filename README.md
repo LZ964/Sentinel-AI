@@ -1,97 +1,97 @@
-# 🛡️ Sentinel Core - Sécurité Avancée (Production)
+# 🛡️ Sentinel Core - Advanced Security (Production)
 
-**Sentinel Core** est une véritable application web et hybride de cybersécurité exploitant directement le matériel de votre appareil. Suite à la nouvelle architecture, elle embarque une intelligence artificielle **100% Locale (zéro-cloud)**, ne dépendant plus d'aucun serveur distant. Elle collecte vos logs de sécurité matériel ("Real Hardware Monitoring") et effectue ses évaluations sur l'appareil.
-
----
-
-## ✨ Fonctionnalités Principales
-
-L'application est divisée en plusieurs modules spécialisés, offrant un design responsif s'adaptant parfaitement aux écrans de mobiles :
-
-### 🔍 1. Audit Système & Scanner de Vulnérabilités (`ScannerTab`)
-*   **Architecture Zéro-Cloud & Sandbox:** Plus aucun backend n'est requis. Fonctionnement 100% autonome.
-*   **Intelligence Artificielle Native & Locale:** Utilisation de **l'API `window.ai` (CoreAI / Gemini Nano)** des navigateurs modernes et flagships (Pixel 8a+). S'il n'est pas détecté, un algorithme de fallback télécharge un module LLM local directement dans la Webview/RAM.
-*   **Vraie évaluation du matériel (Real Hardware Scanner):** Moteur de diagnostic qui extrait la vraie condition de la connectivité réseau, l'état de la batterie (`@capacitor/device`), les capacités hardware (`hardwareConcurrency`), l'isolation Webview (TLS) et les vulnérabilités de traçage (ex: GPU fingerprinting). Exécution asynchrone ultra-rapide (aucune simulation de délai).
-*   **Journal Terminal Détaillé (Mode Debug) :** Tous les retours de l'audit sont affichés sans aucun filtre via un terminal de sécurité intégré, y compris les sorties JSON `raw` complètes pour garantir la transparence des requêtes et inférences.
-
-### 🧱 2. Pare-feu Local & IA Comportementale (`FirewallTab`)
-*   **Pare-feu via VpnService :** Contrôle du trafic réseau local complet, sans envoyer les données à l'extérieur.
-*   **Sécurité Anti-Bypass (Killswitch) :** Une fois des règles réseau établies via le pont natif, elles sont appliquées de bout en bout ("Fail-Closed") et ne peuvent être contournées, garantissant qu'aucune connexion ne fuite en cas de dysfonctionnement.
-*   **Production et Intégration Native Réelle :** Fin des simulations et des mocks. Le module s'interface en direct avec l'API système Android via `window.AndroidBridge` (`setAppStatus`, `enableFirewall`, `requestInstalledApps`, `onInstalledAppsList`, `onNetworkLogIntercepted`).
-*   **Pilotage par l'IA :** Le pare-feu analyse les véritables applications installées et prend des décisions autonomes (bloquer/autoriser) basées sur le trafic réseau réel remonté par l'OS.
-*   **Analyse Sémantique des Logs :** L'IA scrute les requêtes entrantes/sortantes et génère des fiches de "Recommandations" claires structurées.
-*   **Monitoring Avancé :** L'interface affiche le vrai état des connexions socket ouvertes et le trafic applicatif (dynamique).
-
-### 🦠 3. Anti-Malware & Traque de Menaces (`AntiMalwareTab`)
-*   **Supervision Active :** Détection d'anomalies, de rootkits et d'élévations de privilèges.
-*   **Journal (Activité) en Direct :** Affichage terminal colorisé des actions système.
-*   **Module de Désinfection :** Mise en quarantaine et suppression des éléments compromis.
-
-### 🌐 4. Routage Sécurisé & Proxy (`ProxyTab`)
-*   **Profils de Connexion :** Bascule entre différents modes de sécurisation du trafic (Standard, VPN Mullvad, Trafic Oignon via Tor).
-*   **Intégration Réelle de Mullvad :** Activation directe du tunnel Wireguard via une validation par l'API officielle de Mullvad. 
-*   **Direct par Défaut & Anti-Bypass :** La connexion directe ("Direct") est la configuration stricte par défaut. Toute connexion Tor ou VPN ne peut s'activer que par requête manuelle. Si aucune requête sécurisée n'est valide ou disponible, l'application ne simulera pas les résultats et retournera des erreurs strictes.
-*   **Masquage d'IP :** Interface de suivi du statut cryptographique et gestion de la route réseau active informelle et sans alertes invasives.
-
-### 💻 5. Outils Avancés ADB (`AdbTab`)
-*   **Console pour Experts :** Interface permettant d'interagir profondément avec l'appareil (connexion USB ou WiFi).
+**Sentinel Core** is a robust web and hybrid cybersecurity application that interacts directly with your device's hardware. With its latest architecture, it embeds an **100% Local (Zero-Cloud)** Artificial Intelligence, eliminating remote server dependencies. It leverages "Real Hardware Monitoring" to collect security logs and performs all evaluations directly on-device.
 
 ---
 
-## ⚙️ Architecture & Intégration Native (CI/CD)
+## ✨ Primary Features
 
-Afin de garantir une sécurité et une intégrité maximales, **Sentinel Core** utilise une approche de compilation propre ("Clean Build") via GitHub Actions pour l'intégration de ses bibliothèques cryptographiques natives (`libwg-go.so` pour WireGuard / Mullvad, et `libtor.so` pour le routage Oignon). 
+The application is modularized, featuring a responsive design tailored for mobile screens:
 
-Plutôt que de télécharger des bibliothèques dynamiquement au moment de l'exécution (une pratique vulnérable aux attaques de type *Man-in-the-Middle* et bloquée par les politiques de sécurité Android modernes), le système d'intégration continue (CI/CD) est responsable de :
-1. Télécharger les binaires sécurisés depuis des sources de confiance.
-2. Vérifier scrupuleusement les signatures SHA-256 de ces binaires.
-3. Les injecter directement dans le dossier `jniLibs/arm64-v8a` du paquet Android avant l'assemblage de l'APK.
+### 🔍 1. System Audit & Vulnerability Scanner (`ScannerTab`)
+*   **Zero-Cloud & Sandbox Architecture:** Operates completely autonomously with no backend requirement.
+*   **Native & Local AI:** Utilizes modern browsers' and flagship devices' (Pixel 8a+) **`window.ai` API (CoreAI / Gemini Nano)**. A fallback mechanism downloads a local LLM module directly into the Webview/RAM if the native API is unavailable.
+*   **Real Hardware Scanner:** A diagnostic engine extracting precise data regarding network connectivity, battery status (`@capacitor/device`), hardware capacities (`hardwareConcurrency`), Webview isolation (TLS) and tracking vulnerabilities (e.g., GPU fingerprinting). Boasts ultra-fast asynchronous execution with zero simulated delays.
+*   **Detailed Terminal Log (Debug Mode):** Displays completely unfiltered audit returns via an integrated security terminal, providing raw JSON outputs to ensure complete transparency of queries and inferences.
 
-Cette approche garantit qu'il n'y a pas besoin de mettre à jour manuellement ou produire une nouvelle application côté code pour intégrer les dernières versions des librairies, tout se fait de manière transparente, hermétique et sécurisée lors du déploiement continu.
+### 🧱 2. Local Firewall & Behavioral AI (`FirewallTab`)
+*   **VpnService Firewall:** Complete control over local network traffic without exposing data externally.
+*   **Anti-Bypass (Killswitch) Security:** Network rules are enforced end-to-end ("Fail-Closed") via the native bridge. Traffic cannot bypass the firewall even during malfunctions, preventing data leaks.
+*   **Real Native Integration:** Interacts directly with the Android system API via `window.AndroidBridge` (`setAppStatus`, `enableFirewall`, `requestInstalledApps`, `onInstalledAppsList`, `onNetworkLogIntercepted`), replacing previous simulated environments.
+*   **AI-Driven Guidance:** Analyzing actual installed apps, the firewall automatically advises (block/allow) based on real network traffic metrics reported by the OS.
+*   **Semantic Log Analysis:** The AI engine parses incoming/outgoing requests and outputs clear, structured "Recommendation" tickets.
+*   **Advanced Monitoring:** The interface reflects genuine connection states of open sockets and dynamic app traffic.
+
+### 🦠 3. Anti-Malware & Threat Tracker (`AntiMalwareTab`)
+*   **Active Supervision:** Detects anomalies, rootkits, and privilege escalations.
+*   **Live Activity Journal:** A syntax-highlighted terminal display of real-time system actions.
+*   **Disinfection Module:** Allows quarantining and deletion of compromised elements.
+
+### 🌐 4. Secure Routing & Proxy (`ProxyTab`)
+*   **Connection Profiles:** Seamlessly switches between traffic security modes (Standard, Mullvad VPN, Tor Onion Routing).
+*   **Mullvad Integration:** Directly establishes Wireguard tunnels verified via Mullvad's official API.
+*   **Default Direct & Anti-Bypass:** Strict "Direct" connection acts as the baseline. Tor or VPN connections activate only via explicit manual requests. The app delivers strict errors rather than simulated results when secure requests fail.
+*   **IP Masking:** Features a cryptographic status dashboard and non-intrusive active network routing management.
+
+### 💻 5. Advanced ADB Tools (`AdbTab`)
+*   **Expert Console:** An interface for deep device interactions (via USB or WiFi connections), specifically analyzing Android Debug Bridge anomalies.
 
 ---
 
-## 🛠️ Stack Technique
+## ⚙️ Architecture & Native Integration (CI/CD)
 
-*   **Intelligence Artificielle:** Utilisation en production de `window.ai` (CoreAI/Gemini Nano local) et `@huggingface/transformers` en fallback.
-*   **Pont Matériel:** CapacitorJS (`@capacitor/device`, `@capacitor/network`, `@capacitor/app`).
-*   **Framework Core:** [React](https://react.dev/) 18 (TypeScript) via Vite, architecture **Single-Page Application (Client-Side)**.
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) optimisé pour le First-Mobile design (Responsive).
+To ensure peak security and integrity, **Sentinel Core** employs a "Clean Build" pipeline utilizing GitHub Actions for compiling native cryptographic libraries (`libwg-go.so` for WireGuard/Mullvad and `libtor.so` for Tor routing).
+
+Instead of downloading these libraries dynamically at runtime (which is vulnerable to Man-in-the-Middle attacks and restricted by modern Android security policies), the Continuous Integration / Continuous Deployment (CI/CD) system is configured to:
+1. Fetch secure binaries from trusted sources.
+2. Rigorously verify the SHA-256 signatures of these binaries.
+3. Inject them directly into the Android package's `jniLibs/arm64-v8a` directory before APK assembly.
+
+This ensures all library updates happen transparently, securely, and without requiring code-side logic changes for the next version deployment.
+
+---
+
+## 🛠️ Technical Stack
+
+*   **Intelligence:** Production use of `window.ai` (CoreAI/Gemini Nano local) with `@huggingface/transformers` as a fallback.
+*   **Hardware Bridge:** CapacitorJS (`@capacitor/device`, `@capacitor/network`, `@capacitor/app`).
+*   **Core Framework:** [React](https://react.dev/) 18 (TypeScript) with Vite, functioning as a **Single-Page Application (Client-Side)**.
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) with a Responsive, Mobile-First approach.
 *   **Animations:** [Framer Motion](https://motion.dev/)
-*   **Graphiques:** [Recharts](https://recharts.org/) pour la visualisation de la bande passante
+*   **Graphics:** [Recharts](https://recharts.org/) for bandwidth visualization.
 
 ---
 
-## 🚀 Installation & Développement
+## 🚀 Installation & Development
 
-Assurez-vous d'avoir `Node.js` d'installé sur votre machine.
+Ensure `Node.js` is installed on your environment.
 
-1. **Cloner le projet :**
+1. **Clone the repository:**
    ```bash
-   git clone <votre-url-github>
+   git clone <your-github-url>
    cd sentinel-core
    ```
 
-2. **Installer les dépendances :**
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Lancer l'Application :**
+3. **Start the application:**
    ```bash
    npm run dev
    ```
 
-4. **Compiler pour la production :**
+4. **Compile for production:**
    ```bash
    npm run build
    ```
 
 ---
 
-## 📄 Licence et Copyright
+## 📄 License & Copyright
 
-Ce projet est sous licence MIT.
-Copyright (c) 2026 carlgodrolt. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is licensed under the MIT License.
+Copyright (c) 2026 carlgodrolt. See the [LICENSE](LICENSE) file for details.
 
 

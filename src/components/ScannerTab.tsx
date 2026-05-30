@@ -22,7 +22,7 @@ import { ScanStatus, LogEntry, VulnerabilityResult, ScanMode } from "../types";
 import { LocalAIService } from "../lib/localAi";
 
 const Device = {
-  getInfo: async () => ({ model: navigator.userAgent.substring(0, 30) + "...", osVersion: "Inconnu", platform: "web", manufacturer: "Web Browser", webViewVersion: "NA" }),
+  getInfo: async () => ({ model: navigator.userAgent.substring(0, 30) + "...", osVersion: "Unknown", platform: "web", manufacturer: "Web Browser", webViewVersion: "NA" }),
   getBatteryInfo: async () => ({ batteryLevel: 1, isCharging: true }),
   getLanguageCode: async () => 'en'
 };
@@ -53,10 +53,10 @@ export default function ScannerTab() {
       const networkStatus = await Network.getStatus();
       if (!networkStatus.connected) {
          setLogs([
-            { id: Date.now(), time: new Date().toLocaleTimeString(), message: "ERREUR FATALE: L'appareil est HORS LIGNE.", type: "error" },
-            { id: Date.now() + 1, time: new Date().toLocaleTimeString(), message: "Vous devez obligatoirement être en ligne pour télécharger les dernières vulnérabilités réelles de production.", type: "error" }
+            { id: Date.now(), time: new Date().toLocaleTimeString(), message: "FATAL ERROR: The device is OFFLINE.", type: "error" },
+            { id: Date.now() + 1, time: new Date().toLocaleTimeString(), message: "You must be online to download the latest actual production vulnerabilities.", type: "error" }
          ]);
-         window.alert("Erreur : Vous devez être en ligne pour continuer.");
+         window.alert("Error: You must be online to continue.");
          setStatus("completed");
          return;
       }
@@ -67,7 +67,7 @@ export default function ScannerTab() {
           {
             id: Date.now(),
             time: new Date().toLocaleTimeString(),
-            message: "Initialisation du diagnostic d'applications...",
+            message: "Initializing application diagnosis...",
             type: "info",
           },
         ]);
@@ -82,15 +82,15 @@ export default function ScannerTab() {
               const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'][Math.floor(msg.progress) % 10];
               
               const text = msg.status === 'downloading'
-                ? `Téléchargement ${msg.file} ${spinner} ${Math.round(msg.progress)}%`
-                : `Chargement en mémoire [${msg.file}] ${spinner} ${Math.round(msg.progress)}%`;
+                ? `Downloading ${msg.file} ${spinner} ${Math.round(msg.progress)}%`
+                : `Loading into memory [${msg.file}] ${spinner} ${Math.round(msg.progress)}%`;
 
               if (existingIndex >= 0) {
                 const newLogs = [...prev];
                 
                 // If it's effectively finished, freeze the text without spinner
                 if (msg.progress >= 100) {
-                    newLogs[existingIndex] = { ...newLogs[existingIndex], message: msg.status === 'downloading' ? `Téléchargement ${msg.file} ✔️ 100%` : `Chargement en mémoire [${msg.file}] ✔️ 100%` };
+                    newLogs[existingIndex] = { ...newLogs[existingIndex], message: msg.status === 'downloading' ? `Downloading ${msg.file} ✔️ 100%` : `Loading into memory [${msg.file}] ✔️ 100%` };
                 } else {
                     newLogs[existingIndex] = { ...newLogs[existingIndex], message: text };
                 }
@@ -124,7 +124,7 @@ export default function ScannerTab() {
             {
               id: Date.now(),
               time: new Date().toLocaleTimeString(),
-              message: "Interrogation de l'API native PackageManager...",
+              message: "Querying native API PackageManager...",
               type: "action",
             },
           ]);
@@ -135,7 +135,7 @@ export default function ScannerTab() {
             {
               id: Date.now(),
               time: new Date().toLocaleTimeString(),
-              message: `${appsList.length} applications détectées par le plugin natif.`,
+              message: `${appsList.length} applications detected by the native plugin.`,
               type: "success",
             },
           ]);
@@ -145,7 +145,7 @@ export default function ScannerTab() {
             {
               id: Date.now(),
               time: new Date().toLocaleTimeString(),
-              message: `Plugin natif inatteignable (exécution web). Le scan d'applications nécessite l'application native.`,
+              message: `Native plugin unreachable (web execution). Application scan requires the native app.`,
               type: "warning",
             },
           ]);
@@ -158,7 +158,7 @@ export default function ScannerTab() {
             {
               id: Date.now(),
               time: new Date().toLocaleTimeString(),
-              message: "Analyse annulée: aucune application trouvée.",
+              message: "Analysis canceled: no applications found.",
               type: "warning",
             },
           ]);
@@ -188,21 +188,21 @@ export default function ScannerTab() {
               cveId:
                 "APP-RISK-" +
                 Math.random().toString(36).substr(2, 5).toUpperCase(),
-              title: "Application Suspecte: " + r.appName,
+              title: "Suspicious Application: " + r.appName,
               severity:
-                r.riskLevel === "Élevé"
+                r.riskLevel === "High"
                   ? "CRITICAL"
-                  : r.riskLevel === "Modéré"
+                  : r.riskLevel === "Moderate"
                     ? "HIGH"
                     : "MODERATE",
-              impact: `Paquet: ${r.packageName}`,
+              impact: `Package: ${r.packageName}`,
               description: r.reason,
               concept: r.userFriendlyWarning,
               updateStatus: r.canAutomate
-                ? `Action Dispo: ${r.automationAction}`
-                : "Désinstallation Manuelle",
+                ? `Available Action: ${r.automationAction}`
+                : "Manual Uninstall",
               mitigation:
-                "Ouvrir les paramètres Android pour désinstaller ou révoquer les droits.",
+                "Open Android settings to uninstall or revoke rights.",
             })),
           );
           setStatus("completed");
@@ -217,7 +217,7 @@ export default function ScannerTab() {
         {
           id: Date.now(),
           time: new Date().toLocaleTimeString(),
-          message: "Initialisation du diagnostic matériel...",
+          message: "Initializing hardware diagnosis...",
           type: "info",
         },
       ]);
@@ -239,7 +239,7 @@ export default function ScannerTab() {
           {
             id: Date.now() + 1,
             time: new Date().toLocaleTimeString(),
-            message: `Modele: ${info.model || "Inconnu"} (OS: ${info.osVersion || "Inconnu"}) - Plateforme: ${info.platform}`,
+            message: `Model: ${info.model || "Unknown"} (OS: ${info.osVersion || "Unknown"}) - Platform: ${info.platform}`,
             type: "success",
           },
         ]);
@@ -248,7 +248,7 @@ export default function ScannerTab() {
           {
             id: Date.now() + 10,
             time: new Date().toLocaleTimeString(),
-            message: `Fabricant: ${info.manufacturer || "Inconnu"} | WebView: ${info.webViewVersion || "NA"}`,
+            message: `Manufacturer: ${info.manufacturer || "Unknown"} | WebView: ${info.webViewVersion || "NA"}`,
             type: "info",
           },
         ]);
@@ -258,7 +258,7 @@ export default function ScannerTab() {
             {
               id: Date.now() + 11,
               time: new Date().toLocaleTimeString(),
-              message: `Batterie: ${Math.round((fullDeviceInfo.battery.batteryLevel || 0) * 100)}% | En charge: ${fullDeviceInfo.battery.isCharging}`,
+              message: `Battery: ${Math.round((fullDeviceInfo.battery.batteryLevel || 0) * 100)}% | Charging: ${fullDeviceInfo.battery.isCharging}`,
               type: "info",
             },
           ]);
@@ -269,13 +269,13 @@ export default function ScannerTab() {
           {
             id: Date.now() + 1,
             time: new Date().toLocaleTimeString(),
-            message: `Information matériel indisponible (exécution web/simulateur)`,
+            message: `Hardware information unavailable (web execution/simulator)`,
             type: "warning",
           },
         ]);
         info = {
           model: navigator.userAgent.substring(0, 30) + "...",
-          osVersion: "Inconnu",
+          osVersion: "Unknown",
           platform: "web",
         };
         fullDeviceInfo.info = info;
@@ -290,13 +290,13 @@ export default function ScannerTab() {
             const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'][Math.floor(msg.progress) % 10];
             
             const text = msg.status === 'downloading'
-              ? `Téléchargement ${msg.file} ${spinner} ${Math.round(msg.progress)}%`
-              : `Chargement en mémoire [${msg.file}] ${spinner} ${Math.round(msg.progress)}%`;
+              ? `Downloading ${msg.file} ${spinner} ${Math.round(msg.progress)}%`
+              : `Loading into memory [${msg.file}] ${spinner} ${Math.round(msg.progress)}%`;
 
             if (existingIndex >= 0) {
               const newLogs = [...prev];
               if (msg.progress >= 100) {
-                  newLogs[existingIndex] = { ...newLogs[existingIndex], message: msg.status === 'downloading' ? `Téléchargement ${msg.file} ✔️ 100%` : `Chargement en mémoire [${msg.file}] ✔️ 100%` };
+                  newLogs[existingIndex] = { ...newLogs[existingIndex], message: msg.status === 'downloading' ? `Downloading ${msg.file} ✔️ 100%` : `Loading into memory [${msg.file}] ✔️ 100%` };
               } else {
                   newLogs[existingIndex] = { ...newLogs[existingIndex], message: text };
               }
@@ -350,7 +350,7 @@ export default function ScannerTab() {
       );
 
       if (!data || !data.logs || !Array.isArray(data.logs)) {
-        throw new Error("Format de réponse invalide reçu du moteur IA local.");
+        throw new Error("Invalid response format received from local AI engine.");
       }
 
       if (data.logs && data.logs.length > 0) {
@@ -376,7 +376,7 @@ export default function ScannerTab() {
         {
           id: Date.now(),
           time: new Date().toLocaleTimeString(),
-          message: `ECHEC AUDIT: ${error.message}`,
+          message: `AUDIT FAILURE: ${error.message}`,
           type: "error",
         },
       ]);
@@ -432,10 +432,10 @@ export default function ScannerTab() {
         <div className="flex-1 relative z-10 flex flex-col sm:flex-row justify-between sm:items-center gap-4 w-full">
           <div>
             <h2 className="text-xl font-display font-bold text-white tracking-tight">
-              Audit de Sécurité Système
+              System Security Audit
             </h2>
             <p className="text-slate-400 text-sm mt-1">
-              Vérification de l'intégrité (Noyau, Vulnérabilités, Secure Boot).
+              Integrity check (Kernel, Vulnerabilities, Secure Boot).
             </p>
           </div>
           
@@ -460,8 +460,8 @@ export default function ScannerTab() {
               )}
               <span>
                 {status === "scanning" && scanMode === "full"
-                  ? "En cours..."
-                  : "Audit Complet"}
+                  ? "In progress..."
+                  : "Full Audit"}
               </span>
             </button>
           </div>
@@ -474,20 +474,20 @@ export default function ScannerTab() {
           onClick={() => setActiveTab("overview")}
           className={`pb-3 text-sm font-bold transition-colors whitespace-nowrap border-b-2 flex items-center gap-2 ${activeTab === "overview" ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
         >
-          <Activity className="w-4 h-4" /> Vue d'ensemble
+          <Activity className="w-4 h-4" /> Overview
         </button>
         <button
           onClick={() => setActiveTab("results")}
           className={`pb-3 text-sm font-bold transition-colors whitespace-nowrap border-b-2 flex items-center gap-2 ${activeTab === "results" ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
         >
-          <FileCheck className="w-4 h-4" /> Résultats d'Audit
+          <FileCheck className="w-4 h-4" /> Audit Results
           {results.length > 0 && <span className="ml-1 text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full leading-none">{results.length}</span>}
         </button>
         <button
           onClick={() => setActiveTab("logs")}
           className={`pb-3 text-sm font-bold transition-colors whitespace-nowrap border-b-2 flex items-center gap-2 ${activeTab === "logs" ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
         >
-          <Terminal className="w-4 h-4" /> Terminal d'Audit
+          <Terminal className="w-4 h-4" /> Audit Terminal
         </button>
       </div>
 
@@ -500,13 +500,13 @@ export default function ScannerTab() {
               <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-bold text-blue-400 text-sm mb-1 uppercase tracking-wider">
-                  Limites de vérification du firmware
+                  Firmware verification limits
                 </h3>
                 <p className="text-xs text-[#E2E8F0] leading-relaxed">
-                  Android et ChromeOS sont construits comme des coffres-forts
-                  isolés. Pour vérifier la clé de sécurité matérielle de votre
-                  Chromebook, l'application a besoin de l'aide de notre extension
-                  Chrome, c'est la seule méthode sécurisée autorisée par Google.
+                  Android and ChromeOS are built like vaults
+                  isolated. To verify the hardware security key of your
+                  Chromebook, the application needs the help of our extension
+                  Chrome, it's the only secure method allowed by Google.
                 </p>
               </div>
             </div>
@@ -517,10 +517,10 @@ export default function ScannerTab() {
                 <Play className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-cyan-400 text-xs uppercase tracking-wider mb-1">
-                    Audit Complet
+                    Full Audit
                   </h4>
                   <p className="text-[11px] text-slate-400 leading-relaxed">
-                    Analyse approfondie de tous les paquets installés, modules du
+                    Deep analysis of all installed packages, kernel modules,
                     noyau, anomalies d'autorisations et traque des menaces
                     complexes.
                   </p>
@@ -537,10 +537,10 @@ export default function ScannerTab() {
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-lg tracking-tight">
-                    Ce que l'application fait vraiment
+                    What the app really does
                   </h3>
                   <p className="text-xs text-cyan-400/60 font-mono mt-0.5 uppercase tracking-widest">
-                    En Toute Transparence : Nos Limites Techniques
+                    In All Transparency: Our Technical Limits
                   </p>
                 </div>
               </div>
@@ -551,16 +551,16 @@ export default function ScannerTab() {
                   <div className="flex items-center gap-2">
                     <Blocks className="w-4 h-4 text-cyan-400" />
                     <h4 className="font-bold text-white text-[12px] uppercase">
-                      1. Limites d'Android
+                      1. Android limits
                     </h4>
                   </div>
                   <p className="text-[11.5px] leading-relaxed text-slate-400">
-                    Android est construit comme un immense bâtiment où chaque
-                    application a son propre coffre-fort. Une véritable application de
+                    Android is built like a huge building where each
+                    application has its own vault. A real security app
                     sécurité ne peut <strong className="text-white">jamais</strong>{" "}
-                    fouiller dans les autres coffres-forts. Sinon, ce serait elle le
-                    virus. Nous travaillons en analysant uniquement ce qui tourne
-                    autour (comportement, réseau).
+                    search inside other vaults. Otherwise, it would be the
+                    virus. We work by analyzing only what is going on
+                    around (behavior, network).
                   </p>
                 </div>
 
@@ -569,16 +569,16 @@ export default function ScannerTab() {
                   <div className="flex items-center gap-2">
                     <Cpu className="w-4 h-4 text-[#FBBF24]" />
                     <h4 className="font-bold text-white text-[12px] uppercase">
-                      2. Pourquoi l'extension Chrome ?
+                      2. Why the Chrome extension?
                     </h4>
                   </div>
                   <p className="text-[11.5px] leading-relaxed text-[#94A3B8]">
-                    Android et ChromeOS sont construits comme des coffres isolés. Pour
-                    vérifier la clé secrète de votre Chromebook, l'application a
-                    besoin de l'aide de notre{" "}
-                    <span className="font-bold">extension Chrome compagnon</span>.
-                    C'est la seule méthode sécurisée autorisée par Google pour
-                    interroger la puce ("Titan C").
+                    Android and ChromeOS are built as isolated vaults. To
+                    check the secret key of your Chromebook, the app
+                    needs the help of our{" "}
+                    <span className="font-bold">companion Chrome extension</span>.
+                    It's the only secure method allowed by Google for
+                    interrogate the chip ("Titan C").
                   </p>
                 </div>
 
@@ -587,16 +587,16 @@ export default function ScannerTab() {
                   <div className="flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-[#F87171]" />
                     <h4 className="font-bold text-white text-[12px] uppercase">
-                      3. Le mythe du 100% sûr
+                      3. The 100% secure myth
                     </h4>
                   </div>
                   <p className="text-[11.5px] leading-relaxed text-[#94A3B8]">
-                    L'application compare l'état de votre système avec notre base de
-                    vulnérabilités publique. Est-ce fiable à 100% ?{" "}
-                    <strong className="text-[#F87171]">Non.</strong> Aucun système ne
-                    l'est. Un téléphone déjà infecté par une faille ultra-sophistiquée
-                    (Zero-Day) pourrait mentir à notre scanner et prétendre que tout
-                    va bien.
+                    The application compares the state of your system with our
+                    public vulnerability database. Is it 100% reliable?{" "}
+                    <strong className="text-[#F87171]">No.</strong> No system
+                    it is. A phone already infected by an ultra-sophisticated flaw
+                    (Zero-Day) could lie to our scanner and pretend everything
+                    is fine.
                   </p>
                 </div>
               </div>
@@ -616,7 +616,7 @@ export default function ScannerTab() {
               <div className="flex items-center gap-2">
                 <ShieldAlert className="w-5 h-5 text-rose-400" />
                 <h3 className="text-sm font-bold text-white">
-                  Rapport de Vulnérabilité
+                  Vulnerability Report
                 </h3>
               </div>
               {status === "completed" && (
@@ -631,30 +631,30 @@ export default function ScannerTab() {
               <div className="bg-[#F87171]/5 border border-[#F87171]/20 p-2.5 rounded-lg flex flex-col justify-start">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <ShieldX className="w-3 h-3 text-[#F87171] shrink-0" />
-                  <span className="text-[#F87171] text-[9.5px] font-bold tracking-wider uppercase">Critique</span>
+                  <span className="text-[#F87171] text-[9.5px] font-bold tracking-wider uppercase">Critical</span>
                 </div>
-                <p className="text-[9px] text-[#F87171]/80 leading-snug">Action immédiate. Faille de contournement direct.</p>
+                <p className="text-[9px] text-[#F87171]/80 leading-snug">Immediate action. Direct bypass flaw.</p>
               </div>
               <div className="bg-[#FBBF24]/5 border border-[#FBBF24]/20 p-2.5 rounded-lg flex flex-col justify-start">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <AlertTriangle className="w-3 h-3 text-[#FBBF24] shrink-0" />
                   <span className="text-[#FBBF24] text-[9.5px] font-bold tracking-wider uppercase">Élevé</span>
                 </div>
-                <p className="text-[9px] text-[#FBBF24]/80 leading-snug">Mise à jour requise. Compromission importante.</p>
+                <p className="text-[9px] text-[#FBBF24]/80 leading-snug">Update required. Major compromise.</p>
               </div>
               <div className="bg-yellow-500/5 border border-yellow-500/20 p-2.5 rounded-lg flex flex-col justify-start">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <Info className="w-3 h-3 text-yellow-500 shrink-0" />
-                  <span className="text-yellow-500 text-[9.5px] font-bold tracking-wider uppercase">Modéré</span>
+                  <span className="text-yellow-500 text-[9.5px] font-bold tracking-wider uppercase">Moderate</span>
                 </div>
-                <p className="text-[9px] text-yellow-500/80 leading-snug">Défaut mineur ou risque d'exposition locale.</p>
+                <p className="text-[9px] text-yellow-500/80 leading-snug">Minor flaw or local exposure risk.</p>
               </div>
               <div className="bg-blue-500/5 border border-blue-500/20 p-2.5 rounded-lg flex flex-col justify-start">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <CheckCircle2 className="w-3 h-3 text-blue-400 shrink-0" />
-                  <span className="text-blue-400 text-[9.5px] font-bold tracking-wider uppercase">Faible</span>
+                  <span className="text-blue-400 text-[9.5px] font-bold tracking-wider uppercase">Low</span>
                 </div>
-                <p className="text-[9px] text-blue-400/80 leading-snug">Bonne pratique manquante, très faible risque.</p>
+                <p className="text-[9px] text-blue-400/80 leading-snug">Missing good practice, very low risk.</p>
               </div>
             </div>
 
@@ -662,9 +662,9 @@ export default function ScannerTab() {
               <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50 min-h-0">
                 <ShieldAlert className="w-12 h-12 text-slate-700 mb-3" />
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">
-                  En attente des résultats
+                  Waiting for results
                 </p>
-                {status === "scanning" && <p className="text-xs text-slate-500 mt-2">L'audit est en cours, consultez le terminal pour le suivi.</p>}
+                {status === "scanning" && <p className="text-xs text-slate-500 mt-2">Audit is in progress, check the terminal for tracking.</p>}
               </div>
             ) : (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col space-y-3 -mx-2 px-2 pb-2">
@@ -690,7 +690,7 @@ export default function ScannerTab() {
                               </p>
                               <div className="mt-2 inline-flex items-center gap-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 px-3 py-1.5 rounded border border-cyan-500/30 transition-all font-bold uppercase text-[10px] tracking-wider relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
-                                <Info className="w-3.5 h-3.5" /> Cliquez ici pour lire la recommandation IA
+                                <Info className="w-3.5 h-3.5" /> Click here to read the AI recommendation
                               </div>
                             </>
                           ) : null}
@@ -710,13 +710,13 @@ export default function ScannerTab() {
                                 <div className="grid md:grid-cols-2 gap-4">
                                   <div>
                                     <h5 className="font-bold text-[#A5B4FC] flex items-center gap-1.5 uppercase tracking-wider text-[10px] mb-2">
-                                      <Info className="w-3.5 h-3.5" /> Statut Technique
+                                      <Info className="w-3.5 h-3.5" /> Technical Status
                                     </h5>
                                     <p className="text-[#94A3B8] leading-relaxed text-sm">{res.concept}</p>
                                   </div>
                                   <div>
                                     <h5 className="font-bold text-[#FBBF24] flex items-center gap-1.5 uppercase tracking-wider text-[10px] mb-2">
-                                      <Zap className="w-3.5 h-3.5" /> Correctif Requis
+                                      <Zap className="w-3.5 h-3.5" /> Fix Required
                                     </h5>
                                     <p className="text-[#FBBF24]/90 font-mono text-sm leading-relaxed bg-[#FBBF24]/5 p-2 rounded-lg border border-[#FBBF24]/10 inline-block">{res.updateStatus}</p>
                                   </div>
@@ -724,11 +724,11 @@ export default function ScannerTab() {
                               </div>
                               <div className="bg-[#022c22]/40 p-5 rounded-xl border-2 border-[#4ADE80]/40 shadow-[0_0_15px_rgba(74,222,128,0.05)] mt-1">
                                 <h5 className="font-bold text-[#4ADE80] flex items-center gap-2 uppercase tracking-widest text-[12px] mb-3">
-                                  <CheckCircle2 className="w-5 h-5" /> Recommandation Vulgarisée de l'IA
+                                  <CheckCircle2 className="w-5 h-5" /> Popularized AI Recommendation
                                 </h5>
                                 <p className="text-[#4ADE80] font-medium leading-relaxed text-sm md:text-base">{res.mitigation}</p>
                                 <div className="mt-4 pt-3 border-t border-[#4ADE80]/20 flex items-center gap-2 text-xs text-[#4ADE80]/60 uppercase tracking-widest font-bold">
-                                  <BrainCircuit className="w-3.5 h-3.5" /> Explication simplifiée pour débutant
+                                  <BrainCircuit className="w-3.5 h-3.5" /> Simplified explanation for beginners
                                 </div>
                               </div>
                             </div>
@@ -749,14 +749,14 @@ export default function ScannerTab() {
                <div className="flex items-center gap-3">
                   <Terminal className="w-5 h-5 text-cyan-400" />
                   <span className="text-xs font-mono font-bold text-white uppercase tracking-widest">
-                     Terminal d'Audit
+                     Audit Terminal
                   </span>
                </div>
               <div className="flex items-center gap-2">
                  {status === "scanning" && (
                    <span className="flex items-center gap-1.5 shrink-0">
                      <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                     <span className="text-[10px] text-cyan-400 font-mono">SCAN...</span>
+                     <span className="text-[10px] text-cyan-400 font-mono">SCANNING...</span>
                    </span>
                  )}
               </div>
@@ -797,7 +797,7 @@ export default function ScannerTab() {
               {logs.length > 0 && status === "scanning" && (
                 <div className="flex items-center gap-2 text-cyan-400 mt-2 font-bold mb-2">
                   <Terminal className="w-3.5 h-3.5 animate-pulse" />
-                  <span className="animate-pulse">Analyse en cours</span>
+                  <span className="animate-pulse">Analysis in progress</span>
                   <span className="flex items-center space-x-1">
                     <span className="animate-bounce delay-75">.</span>
                     <span className="animate-bounce delay-150">.</span>

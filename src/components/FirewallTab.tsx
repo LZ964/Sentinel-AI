@@ -213,7 +213,7 @@ export default function FirewallTab() {
           return {
             ...app,
             status: nextStatus,
-            reason: nextStatus === "blocked" ? "Bloqué Manuellement" : "",
+            reason: nextStatus === "blocked" ? "Manually Blocked" : "",
           };
         }
         return app;
@@ -227,7 +227,7 @@ export default function FirewallTab() {
         if (app.package === pkg && app.status !== "blocked") {
           if (window.AndroidBridge?.setAppStatus)
             window.AndroidBridge.setAppStatus(pkg, "blocked");
-          return { ...app, status: "blocked", reason: "Bloqué via Logs" };
+          return { ...app, status: "blocked", reason: "Blocked via Logs" };
         }
         return app;
       }),
@@ -271,14 +271,14 @@ export default function FirewallTab() {
         <div className="relative z-10 w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-display font-bold text-white tracking-tight">
-              Pare-feu Local
+              Local Firewall
             </h2>
             <p className="text-slate-400 text-sm mt-1">
-              Gérez et sécurisez les connexions réseau de votre appareil.
+              Manage and secure your device's network connections.
             </p>
             <div className="mt-2 bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg inline-block w-full max-w-2xl">
               <p className="text-[10.5px] leading-relaxed text-blue-300">
-                <span className="font-bold">Comment ça marche ?</span> Ce pare-feu s'interface via l'API VpnService d'Android pour analyser le trafic localement. Aucune de vos données n'est envoyée à l'extérieur.
+                <span className="font-bold">How it works?</span> This firewall interfaces via the Android VpnService API to analyze traffic locally. None of your data is sent externally.
               </p>
             </div>
           </div>
@@ -291,7 +291,7 @@ export default function FirewallTab() {
             </div>
             <div onClick={() => setEnabled(!enabled)} className="cursor-pointer group">
               <h3 className="font-bold text-sm text-white group-hover:text-cyan-400 transition-colors">
-                État du Pare-feu
+                Firewall Status
               </h3>
               <p className={`text-xs font-mono mt-0.5 ${enabled ? "text-cyan-400 animate-pulse" : "text-slate-500"}`}>
                 {enabled ? "ACTIF" : "DÉSACTIVÉ"}
@@ -313,19 +313,19 @@ export default function FirewallTab() {
           onClick={() => setActiveTab("overview")}
           className={`pb-3 text-sm font-bold transition-colors whitespace-nowrap border-b-2 flex items-center gap-2 ${activeTab === "overview" ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
         >
-          <Activity className="w-4 h-4" /> Tableau de Bord
+          <Activity className="w-4 h-4" /> Dashboard
         </button>
         <button
           onClick={() => setActiveTab("apps")}
           className={`pb-3 text-sm font-bold transition-colors whitespace-nowrap border-b-2 flex items-center gap-2 ${activeTab === "apps" ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
         >
-          <AppWindow className="w-4 h-4" /> Règles & Applications
+          <AppWindow className="w-4 h-4" /> Rules & Applications
         </button>
         <button
           onClick={() => setActiveTab("logs")}
           className={`pb-3 text-sm font-bold transition-colors whitespace-nowrap border-b-2 flex items-center gap-2 ${activeTab === "logs" ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
         >
-          <Terminal className="w-4 h-4" /> Supervision Logs
+          <Terminal className="w-4 h-4" /> Log Supervision
         </button>
       </div>
 
@@ -338,8 +338,8 @@ export default function FirewallTab() {
               <h3 className="font-bold flex items-center gap-2 text-white mb-6 bg-black/40 p-3 rounded-xl border border-white/5">
                 <Settings2 className="w-5 h-5 text-cyan-400" />
                 <div>
-                  <span className="block text-sm">Contrôle Automatique (IA)</span>
-                  <span className="text-[10px] text-cyan-500/50 uppercase font-mono">Politique Réseau</span>
+                  <span className="block text-sm">Automatic Control (AI)</span>
+                  <span className="text-[10px] text-cyan-500/50 uppercase font-mono">Network Policy</span>
                 </div>
               </h3>
               <div className="space-y-4 flex-1">
@@ -347,19 +347,19 @@ export default function FirewallTab() {
                   <input type="checkbox" className="mt-1 accent-cyan-400 w-4 h-4 cursor-pointer shrink-0" checked={aiAutoConfig} onChange={() => setAiAutoConfig(!aiAutoConfig)} />
                   <div>
                     <p className="text-sm font-bold text-white mb-1 flex items-center gap-2">
-                      Pilotage par l'IA {aiAutoConfig && <span className="text-[9px] bg-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded uppercase font-bold animate-pulse">Recommandé</span>}
+                      AI Piloting {aiAutoConfig && <span className="text-[9px] bg-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded uppercase font-bold animate-pulse">Recommended</span>}
                     </p>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      L'IA prend des décisions autonomes pour bloquer les menaces.
+                      The AI makes autonomous decisions to block threats.
                     </p>
                   </div>
                 </label>
                 <label className={`flex items-start gap-4 cursor-pointer p-4 rounded-xl transition-colors ${allowLocalNetwork ? "bg-emerald-500/10 border-emerald-500/30" : "bg-white/5 border-transparent"} border`}>
                   <input type="checkbox" className="mt-1 accent-emerald-400 w-4 h-4 cursor-pointer shrink-0" checked={allowLocalNetwork} onChange={() => setAllowLocalNetwork(!allowLocalNetwork)} />
                   <div>
-                    <p className="text-sm font-bold text-white mb-1 flex items-center gap-2">Autoriser le Réseau Local</p>
+                    <p className="text-sm font-bold text-white mb-1 flex items-center gap-2">Allow Local Network</p>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      Permet la communication LAN (Chromecast, imprimantes).
+                      Allows LAN communication (Chromecast, printers).
                     </p>
                   </div>
                 </label>
@@ -367,8 +367,8 @@ export default function FirewallTab() {
                   <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-rose-500/10 border border-rose-500/30 p-4 rounded-xl flex items-start gap-3">
                     <AlertCircle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
                     <p className="text-[11px] text-rose-200 leading-relaxed font-mono">
-                      <span className="font-bold text-rose-400 uppercase tracking-widest block mb-1">Manuelle Débrayée</span>
-                      Toutes les applications sans règle seront autorisées.
+                      <span className="font-bold text-rose-400 uppercase tracking-widest block mb-1">Manual Override</span>
+                      All applications without a rule will be allowed.
                     </p>
                   </motion.div>
                 )}
@@ -381,16 +381,16 @@ export default function FirewallTab() {
               <h3 className="font-bold flex items-center gap-2 text-white mb-6 bg-black/40 p-3 rounded-xl border border-white/5 relative z-10">
                 <Network className="w-5 h-5 text-cyan-400" />
                 <div>
-                  <span className="block text-sm">Analyse Comportementale</span>
-                  <span className="text-[10px] text-cyan-500/50 uppercase font-mono">Inspection des Logs</span>
+                  <span className="block text-sm">Behavioral Analysis</span>
+                  <span className="text-[10px] text-cyan-500/50 uppercase font-mono">Log Inspection</span>
                 </div>
               </h3>
               <div className="flex-1 space-y-5 relative z-10">
                 <div className="flex items-start justify-between bg-black/40 p-4 rounded-xl border border-white/5">
                   <div className="space-y-1">
-                    <p className="text-sm font-bold text-white">Analyse des flux en temps réel</p>
+                    <p className="text-sm font-bold text-white">Real-time flow analysis</p>
                     <p className="text-xs text-slate-400 pr-4 leading-relaxed">
-                      L'IA génère des recommandations sur les requêtes bloquées.
+                      The AI generates recommendations on blocked requests.
                     </p>
                   </div>
                   <button onClick={() => setAiLogAnalysis(!aiLogAnalysis)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 mt-1 ${aiLogAnalysis ? "bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.5)]" : "bg-white/10"}`}>
@@ -401,13 +401,13 @@ export default function FirewallTab() {
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} layout className="bg-cyan-500/10 p-4 rounded-xl border border-cyan-500/30 flex items-start gap-3">
                     <Activity className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
                     <p className="text-xs text-cyan-50 leading-relaxed font-mono">
-                      <span className="font-bold text-cyan-400 animate-pulse">SUPERVISION ACTIVE</span>
+                      <span className="font-bold text-cyan-400 animate-pulse">ACTIVE SUPERVISION</span>
                     </p>
                   </motion.div>
                 ) : (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} layout className="bg-slate-800 p-4 rounded-xl border border-white/5 flex items-start gap-3">
                     <Eye className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-                    <p className="text-xs text-slate-300 leading-relaxed font-mono">Désactivée.</p>
+                    <p className="text-xs text-slate-300 leading-relaxed font-mono">Disabled.</p>
                   </motion.div>
                 )}
               </div>
@@ -419,8 +419,8 @@ export default function FirewallTab() {
                 <div className="flex items-center gap-2 mb-6">
                   <Activity className="w-5 h-5 text-cyan-400" />
                   <div>
-                    <h3 className="font-bold text-sm text-white">Bande Passante</h3>
-                    <p className="text-[10px] uppercase font-mono text-cyan-500/50 mt-0.5">Ko/s par application</p>
+                    <h3 className="font-bold text-sm text-white">Bandwidth</h3>
+                    <p className="text-[10px] uppercase font-mono text-cyan-500/50 mt-0.5">KB/s per application</p>
                   </div>
                 </div>
                 <div className="flex-1 min-h-[200px]">
@@ -432,7 +432,7 @@ export default function FirewallTab() {
                       <Tooltip contentStyle={{ backgroundColor: "rgba(0,0,0,0.8)", borderColor: "rgba(6,182,212,0.2)", borderRadius: "12px", fontSize: "12px", backdropFilter: "blur(8px)" }} itemStyle={{ color: "#E2E8F0" }} />
                       <Line type="monotone" dataKey="chrome" stroke="#22d3ee" strokeWidth={2} dot={false} name="Google Chrome" />
                       <Line type="monotone" dataKey="facebook" stroke="#ec4899" strokeWidth={2} dot={false} name="Facebook" />
-                      <Line type="monotone" dataKey="system" stroke="#f43f5e" strokeWidth={2} dot={false} name="Système" />
+                      <Line type="monotone" dataKey="system" stroke="#f43f5e" strokeWidth={2} dot={false} name="System" />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -440,8 +440,8 @@ export default function FirewallTab() {
               <div className="flex-[2] border border-cyan-500/20 lg:border-l lg:rounded-l-none bg-slate-950/80 p-5 flex flex-col rounded-[20px] mt-4 lg:mt-0 relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h3 className="font-bold text-sm text-white">Connexions Actives</h3>
-                    <p className="text-[10px] uppercase font-mono text-cyan-500/50 mt-0.5">Sockets en cours</p>
+                    <h3 className="font-bold text-sm text-white">Active Connections</h3>
+                    <p className="text-[10px] uppercase font-mono text-cyan-500/50 mt-0.5">Active sockets</p>
                   </div>
                   <span className="text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded font-mono font-bold animate-pulse">
                     {activeConnections.length} ACTIVES
@@ -449,16 +449,16 @@ export default function FirewallTab() {
                 </div>
                 <div className="flex flex-col space-y-2 pr-2">
                   {activeConnections.length === 0 ? (
-                    <div className="text-slate-500 font-mono text-xs p-4 text-center">Aucune socket détectée</div>
+                    <div className="text-slate-500 font-mono text-xs p-4 text-center">No socket detected</div>
                   ) : (
                     activeConnections.map((conn) => (
                       <div key={conn.id} className="bg-black/60 border border-white/5 p-3 rounded-xl flex items-start flex-col gap-1.5 text-xs hover:border-cyan-500/20 transition-colors">
                         <div className="flex justify-between w-full items-center">
                           <p className="font-bold text-white leading-tight">{conn.app}</p>
                           <div>
-                            {conn.status === "ESTABLISHED" && <span className="text-cyan-400 font-mono font-bold text-[9px] bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded">ÉTABLIE</span>}
-                            {conn.status === "BLOCKED" && <span className="text-rose-400 font-mono font-bold text-[9px] bg-rose-500/10 border border-rose-500/20 px-1.5 py-0.5 rounded">BLOQUÉE</span>}
-                            {conn.status === "LISTEN" && <span className="text-purple-400 font-mono font-bold text-[9px] bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded">ÉCOUTE</span>}
+                            {conn.status === "ESTABLISHED" && <span className="text-cyan-400 font-mono font-bold text-[9px] bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded">ESTABLISHED</span>}
+                            {conn.status === "BLOCKED" && <span className="text-rose-400 font-mono font-bold text-[9px] bg-rose-500/10 border border-rose-500/20 px-1.5 py-0.5 rounded">BLOCKED</span>}
+                            {conn.status === "LISTEN" && <span className="text-purple-400 font-mono font-bold text-[9px] bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded">LISTENING</span>}
                           </div>
                         </div>
                         <p className="text-slate-500 font-mono text-[10px] bg-black/40 w-full p-1.5 rounded">{conn.protocol} &rarr; {conn.remoteIp}:{conn.port}</p>
@@ -475,18 +475,18 @@ export default function FirewallTab() {
           <div className="bg-slate-900/40 backdrop-blur-md border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.02)] rounded-[20px] overflow-hidden flex flex-col">
             <div className="p-4 border-b border-cyan-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-black/40 shrink-0">
               <div>
-                <h3 className="font-bold text-base text-white">Gestion des Règles</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-sm">Liste complète des applications. Bloquez ou autorisez explicitement leur accès réseau.</p>
+                <h3 className="font-bold text-base text-white">Rule Management</h3>
+                <p className="text-xs text-slate-400 mt-1 max-w-sm">Complete list of applications. Explicitly block or allow their network access.</p>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                 <div className="flex bg-black/50 p-1 rounded-lg border border-white/10 w-full sm:w-auto">
-                   <button onClick={() => setAppFilter("all")} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${appFilter === "all" ? "bg-cyan-500/20 text-cyan-400" : "text-slate-400 hover:text-white"}`}>Toutes</button>
-                   <button onClick={() => setAppFilter("user")} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${appFilter === "user" ? "bg-cyan-500/20 text-cyan-400" : "text-slate-400 hover:text-white"}`}>Installées</button>
-                   <button onClick={() => setAppFilter("system")} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${appFilter === "system" ? "bg-cyan-500/20 text-cyan-400" : "text-slate-400 hover:text-white"}`}>Système</button>
+                   <button onClick={() => setAppFilter("all")} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${appFilter === "all" ? "bg-cyan-500/20 text-cyan-400" : "text-slate-400 hover:text-white"}`}>All</button>
+                   <button onClick={() => setAppFilter("user")} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${appFilter === "user" ? "bg-cyan-500/20 text-cyan-400" : "text-slate-400 hover:text-white"}`}>Installed</button>
+                   <button onClick={() => setAppFilter("system")} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${appFilter === "system" ? "bg-cyan-500/20 text-cyan-400" : "text-slate-400 hover:text-white"}`}>System</button>
                 </div>
                 <div className="relative w-full sm:w-64">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-cyan-500/50" />
-                  <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Rechercher..." className="w-full bg-black/40 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono transition-colors" />
+                  <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Search..." className="w-full bg-black/40 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono transition-colors" />
                 </div>
               </div>
             </div>
@@ -496,7 +496,7 @@ export default function FirewallTab() {
                   {filteredApps.length === 0 && (
                      <div className="col-span-full py-10 flex text-center flex-col items-center justify-center text-slate-500 italic">
                         <LayoutGrid className="w-10 h-10 mb-3 opacity-20" />
-                        Aucune application ne correspond à vos critères.
+                        No applications match your criteria.
                      </div>
                   )}
                   {filteredApps.map((app) => (
@@ -513,8 +513,8 @@ export default function FirewallTab() {
                             {app.package}
                           </p>
                           <div className="flex gap-2 mt-2">
-                            {app.type === "system" && <span className="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded font-mono uppercase">Système</span>}
-                            {app.reason && app.reason.includes("IA") && <span className="text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-mono uppercase">Géré par IA</span>}
+                            {app.type === "system" && <span className="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded font-mono uppercase">System</span>}
+                            {app.reason && app.reason.includes("IA") && <span className="text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-mono uppercase">Managed by AI</span>}
                           </div>
                         </div>
                       </div>
@@ -526,7 +526,7 @@ export default function FirewallTab() {
                           </span>
                         ) : <div />}
                         <button onClick={() => toggleAppStatus(app.id)} className={`text-xs px-4 py-2 border rounded-lg font-bold transition-colors ml-auto shrink-0 ${app.status === "blocked" ? "bg-transparent hover:bg-rose-500/20 text-rose-400 border-rose-500/20" : "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border-cyan-500/20"}`}>
-                          {app.status === "blocked" ? "Autoriser" : "Bloquer"}
+                          {app.status === "blocked" ? "Allow" : "Block"}
                         </button>
                       </div>
                     </div>
@@ -540,19 +540,19 @@ export default function FirewallTab() {
           <div className="bg-slate-900/40 backdrop-blur-md border border-cyan-500/20 rounded-[20px] overflow-hidden flex flex-col shadow-[0_0_30px_rgba(6,182,212,0.02)]">
             <div className="p-3 border-b border-cyan-500/20 flex items-center gap-3 bg-black/40 shrink-0">
               <Terminal className="w-5 h-5 text-cyan-400" />
-              <span className="text-xs font-mono font-bold text-white uppercase tracking-widest">Logs Réseau & Recommandations IA</span>
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-widest">Network Logs & AI Recommendations</span>
               {logs.length > 0 && enabled && (
                 <span className="ml-auto flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                  <span className="text-[10px] text-cyan-400 font-mono">EN DIRECT</span>
+                  <span className="text-[10px] text-cyan-400 font-mono">LIVE</span>
                 </span>
               )}
             </div>
             <div onScroll={handleScroll} ref={terminalContainerRef} className="flex flex-col p-4 font-mono text-[11px] leading-relaxed bg-black/60 scrollbar-hide">
               {!enabled ? (
-                <div className="flex items-center justify-center h-full text-slate-600 font-bold uppercase tracking-widest">Pare-feu désactivé.</div>
+                <div className="flex items-center justify-center h-full text-slate-600 font-bold uppercase tracking-widest">Firewall disabled.</div>
               ) : logs.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-slate-600 font-bold uppercase tracking-widest">En attente de connexions réseau <span className="animate-pulse ml-0.5">_</span></div>
+                <div className="flex items-center justify-center h-full text-slate-600 font-bold uppercase tracking-widest">Waiting for network connections <span className="animate-pulse ml-0.5">_</span></div>
               ) : (
                 <div className="space-y-4">
                   {logs.map((log) => (
@@ -574,18 +574,18 @@ export default function FirewallTab() {
                               <div className="bg-purple-500/20 p-2 rounded-lg border border-purple-500/30 shrink-0 mt-1"><AlertCircle className="w-5 h-5 text-purple-300" /></div>
                               <div className="flex-1">
                                 <h4 className="text-sm font-bold text-white font-sans flex flex-col md:flex-row md:items-center gap-2">
-                                  <span>Alerte de Sécurité IA</span>
-                                  {log.aiRecommendation.uiType === "BACKGROUND_POPUP" && <span className="inline-block bg-purple-500/20 text-purple-300 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider w-max">Overlay Actif</span>}
-                                  {log.aiRecommendation.uiType === "SYSTEM_NOTIFICATION" && <span className="inline-block bg-blue-500/20 text-blue-300 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider w-max">Notification Émise</span>}
+                                  <span>AI Security Alert</span>
+                                  {log.aiRecommendation.uiType === "BACKGROUND_POPUP" && <span className="inline-block bg-purple-500/20 text-purple-300 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider w-max">Active Overlay</span>}
+                                  {log.aiRecommendation.uiType === "SYSTEM_NOTIFICATION" && <span className="inline-block bg-blue-500/20 text-blue-300 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider w-max">Notification Emitted</span>}
                                 </h4>
                                 <p className="text-sm text-purple-200/90 mt-2 mb-3 font-sans leading-relaxed">{log.aiRecommendation.userFriendlyMessage || log.aiRecommendation.suspiciousBehavior}</p>
                                 {log.aiRecommendation.technicalReason && (
                                   <p className="text-[11px] text-purple-400 font-mono mb-4 bg-purple-950/50 p-3 rounded-lg border border-purple-500/20">[Diagnostic] {log.aiRecommendation.technicalReason}<br/><span className="opacity-50 inline-block mt-1">Status: {log.aiRecommendation.decision} | Dispatch: {log.aiRecommendation.androidIntentAction}</span></p>
                                 )}
                                 <div className="flex flex-wrap items-center gap-3 mt-2">
-                                  <button onClick={() => blockSimilarRequests(log.pkg)} className="px-5 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 rounded-lg text-sm font-bold font-sans transition-colors cursor-pointer relative z-20">Bloquer le trafic</button>
-                                  <button onClick={() => allowSimilarRequests(log.pkg)} className="px-5 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-lg text-sm font-bold font-sans transition-colors cursor-pointer relative z-20">Autoriser</button>
-                                  <button onClick={() => ignoreRecommendation(log.id)} className="px-5 py-2 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-sm font-bold font-sans transition-colors cursor-pointer relative z-20">Ignorer l'alerte</button>
+                                  <button onClick={() => blockSimilarRequests(log.pkg)} className="px-5 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 rounded-lg text-sm font-bold font-sans transition-colors cursor-pointer relative z-20">Block traffic</button>
+                                  <button onClick={() => allowSimilarRequests(log.pkg)} className="px-5 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-lg text-sm font-bold font-sans transition-colors cursor-pointer relative z-20">Allow</button>
+                                  <button onClick={() => ignoreRecommendation(log.id)} className="px-5 py-2 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-sm font-bold font-sans transition-colors cursor-pointer relative z-20">Ignore alert</button>
                                 </div>
                               </div>
                             </div>
