@@ -24,7 +24,7 @@ export type ScanStatus = "idle" | "scanning" | "completed";
 export type ScanMode = "full" | "fast" | "apps";
 
 export interface LogEntry {
-  id: number;
+  id: number | string;
   time: string;
   message: string;
   type: "info" | "warning" | "error" | "success" | "raw" | "action";
