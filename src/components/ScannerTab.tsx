@@ -19,8 +19,6 @@ import {
 
 import { ScanStatus, LogEntry, VulnerabilityResult, ScanMode } from "../types";
 
-import { LocalAIService } from "../lib/localAi";
-
 const Device = {
   getInfo: async () => ({ model: navigator.userAgent.substring(0, 30) + "...", osVersion: "Unknown", platform: "web", manufacturer: "Web Browser", webViewVersion: "NA" }),
   getBatteryInfo: async () => ({ batteryLevel: 1, isCharging: true }),
@@ -113,6 +111,7 @@ export default function ScannerTab() {
         };
 
         // 1. Initialisation de l'IA Locale
+        const { LocalAIService } = await import("../lib/localAi");
         await LocalAIService.initialize(handleAiProgress);
 
         const { AppScanner } = await import("../lib/appScanner");
@@ -319,6 +318,7 @@ export default function ScannerTab() {
       };
 
       // 2. Initialisation de l'IA Locale
+      const { LocalAIService } = await import("../lib/localAi");
       await LocalAIService.initialize(handleAiProgress);
 
       const { AppScanner } = await import("../lib/appScanner");
