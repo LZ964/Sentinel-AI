@@ -58,7 +58,7 @@ export class RealScanner {
     const androidCpe = `cpe:2.3:o:google:android:${osVer}:*:*:*:*:*:*:*`;
        
     // Identification du matériel réel
-    const deviceStr = ((info.hardware || "") + " " + (info.model || "") + " " + (info.manufacturer || "")).toLowerCase();
+    const deviceStr = (((info as any).hardware || "") + " " + (info.model || "") + " " + (info.manufacturer || "")).toLowerCase();
     
     // Déduction des concurrents : on prend la liste des puces connues et on retire celles présentes sur notre appareil
     const allChips = ["qualcomm", "snapdragon", "mediatek", "tensor", "exynos", "mali", "adreno", "bionic"];

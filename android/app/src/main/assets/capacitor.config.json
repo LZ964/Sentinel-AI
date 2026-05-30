@@ -1,5 +1,5 @@
 {
-	"appId": "com.sentinel.core",
-	"appName": "SentinelCore",
+	"appId": "com.sentinel.security",
+	"appName": "Sentinel Security AI",
 	"webDir": "dist"
 }
