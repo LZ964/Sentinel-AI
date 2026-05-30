@@ -10,7 +10,7 @@ The application is modularized, featuring a responsive design tailored for mobil
 
 ### 🔍 1. System Audit & Vulnerability Scanner (`ScannerTab`)
 *   **Zero-Cloud & Sandbox Architecture:** Operates completely autonomously with no backend requirement.
-*   **Native & Local AI:** Utilizes modern browsers' and flagship devices' (Pixel 8a+) **`window.ai` API (CoreAI / Gemini Nano)**. A fallback mechanism downloads a local LLM module directly into the Webview/RAM if the native API is unavailable.
+*   **Native & Local AI:** Utilizes modern browsers' and flagship devices' **`window.ai` API (CoreAI / Gemini Nano)**. A fallback mechanism downloads a local LLM module directly into the Webview/RAM if the native API is unavailable.
 *   **Real Hardware Scanner:** A diagnostic engine extracting precise data regarding network connectivity, battery status (`@capacitor/device`), hardware capacities (`hardwareConcurrency`), Webview isolation (TLS) and tracking vulnerabilities (e.g., GPU fingerprinting). Boasts ultra-fast asynchronous execution with zero simulated delays.
 *   **Detailed Terminal Log (Debug Mode):** Displays completely unfiltered audit returns via an integrated security terminal, providing raw JSON outputs to ensure complete transparency of queries and inferences.
 
