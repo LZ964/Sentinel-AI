@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Companion Security Extension",
+  "version": "1.0.0",
+  "description": "Fournit un accès sécurisé aux API de sécurité de bas niveau de ChromeOS (Firmware, Extensions, Paramètres).",
+  "permissions": [
+    "enterprise.platformKeys",
+    "storage",
+    "management",
+    "privacy"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "ids": ["*"],
+    "matches": [
+      "*://*.localhost/*",
+      "<all_urls>"
+    ],
+    "accepts_tls_channel_id": false
+  }
+}

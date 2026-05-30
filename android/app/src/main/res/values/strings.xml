@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SentinelCore</string>
+    <string name="title_activity_main">SentinelCore</string>
+    <string name="package_name">com.sentinel.core</string>
+    <string name="custom_url_scheme">com.sentinel.core</string>
+</resources>
