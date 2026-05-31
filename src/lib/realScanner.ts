@@ -9,6 +9,7 @@ export interface Vulnerability {
   description: string;
   published: string;
   component: string;
+  configurations?: any[];
 }
 
 const BACKUP_CVES: Vulnerability[] = [
@@ -89,7 +90,8 @@ export class RealScanner {
           id: cve.id,
           description: desc,
           published: cve.published.split('T')[0],
-          component: componentType
+          component: componentType,
+          configurations: cve.configurations
         });
       }
       return results;
@@ -159,9 +161,58 @@ export class RealScanner {
         uniqueMap.set(cve.id, cve);
       }
 
+      // Filtre Strict Anti-Faux-Positifs basé sur les CPE
+      const validTargets = ["android", "linux_kernel", "sqlite", "boringssl", "qualcomm", "mediatek", "tensor", "skia"];
+      const filteredByCpe = Array.from(uniqueMap.values()).filter(v => {
+        const configs = v.configurations;
+        // Si pas de configurations (faille trop récente ou backup), on la garde par précaution (Zero-Day)
+        if (!configs || !Array.isArray(configs) || configs.length === 0) {
+          return true;
+        }
+
+        let foundAnyCpe = false;
+        let matchesValidTarget = false;
+
+        const traverse = (obj: any) => {
+          if (!obj || typeof obj !== 'object') return;
+
+          if (Array.isArray(obj)) {
+            for (const item of obj) {
+              traverse(item);
+            }
+          } else {
+            if (typeof obj.criteria === 'string' && obj.criteria.startsWith('cpe:')) {
+              foundAnyCpe = true;
+              const cpeStr = obj.criteria.toLowerCase();
+              const parts = cpeStr.split(':');
+              if (parts.length >= 5) {
+                const vendor = parts[3];
+                const product = parts[4];
+                const isMatch = validTargets.some(target => 
+                  vendor.includes(target) || product.includes(target)
+                );
+                if (isMatch) {
+                  matchesValidTarget = true;
+                }
+              }
+            }
+            for (const key of Object.keys(obj)) {
+              traverse(obj[key]);
+            }
+          }
+        };
+
+        traverse(configs);
+
+        if (foundAnyCpe && !matchesValidTarget) {
+          return false; // Rejeter car les CPE ne ciblent aucun composant Android/Upstream
+        }
+        return true;
+      });
+
       // Filter by: publication date > patchLevel
       const patchTime = new Date(patchLevel).getTime();
-      let filtered = Array.from(uniqueMap.values()).filter(cve => {
+      let filtered = filteredByCpe.filter(cve => {
         const publishedTime = new Date(cve.published).getTime();
         return publishedTime > patchTime;
       });
