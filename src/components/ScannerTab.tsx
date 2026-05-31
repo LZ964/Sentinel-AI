@@ -3,8 +3,9 @@ import { RealScanner, Vulnerability } from '../lib/realScanner';
 import { WelcomePopup } from './WelcomePopup';
 import { Search, AlertOctagon, ShieldAlert, ShieldCheck, Activity, Terminal, Shield, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { translations, Language } from '../lib/translations';
 
-export default function ScannerTab() {
+export default function ScannerTab({ language = 'FR' }: { language?: Language }) {
   const [vulns, setVulns] = useState<Vulnerability[]>([]);
   const [searchFilter, setSearchFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -12,7 +13,25 @@ export default function ScannerTab() {
   const [hasScanned, setHasScanned] = useState(false);
   const [scanStep, setScanStep] = useState<string>('');
 
-  const simulateLogs = [
+  const t = translations[language];
+
+  const simulateLogs = language === 'EN' ? [
+    "Initializing local offline scanner...",
+    "Verifying Applet execution permissions...",
+    "Identifying Linux kernel version...",
+    "Reading hardware security patch level (Android 2025/2026)...",
+    "Incremental NVD threat database verification...",
+    "Analyzing 1000+ known vulnerability signatures...",
+    "Heuristic calculation of potential attack vectors..."
+  ] : language === 'ES' ? [
+    "Inicializando escáner local sin conexión...",
+    "Verificando permisos de ejecución de la Applet...",
+    "Identificando la versión del kernel Linux...",
+    "Leyendo el nivel de parche de seguridad de hardware (Android 2025/2026)...",
+    "Verificación incremental de la base de datos de amenazas NVD...",
+    "Analizando más de 1000 firmas de vulnerabilidades conocidas...",
+    "Cálculo heurístico de posibles vectores de ataque..."
+  ] : [
     "Initialisation du scanner local offline...",
     "Vérification des permissions d'exécution de l'Applet...",
     "Identification de la version du noyau Linux...",
@@ -72,13 +91,13 @@ export default function ScannerTab() {
         <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="flex-1 relative z-10 flex flex-col justify-between" id="scanner-header-info">
           <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/25 self-start mb-2">
-            Module Principal d'Analyse
+            {t.badgeModuleScanner}
           </span>
           <h2 className="text-xl font-display font-bold text-white tracking-tight flex items-center">
-            <Shield className="mr-2 h-5 w-5 text-cyan-400" /> Audit de Sécurité Systémique
+            <Shield className="mr-2 h-5 w-5 text-cyan-400" /> {t.scannerHeading}
           </h2>
           <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-            Interrogez directement les vulnérabilités CVE de la banque officielle du National Vulnerability Database (NVD) face au correctif de votre noyau.
+            {t.scannerDescription}
           </p>
         </div>
         
@@ -89,7 +108,7 @@ export default function ScannerTab() {
             id="scanner-action-retry"
           >
             <RefreshCw size={16} className="animate-spin-slow" />
-            [RELANCER]
+            {t.btnRelaunch}
           </button>
         )}
       </div>
@@ -103,9 +122,9 @@ export default function ScannerTab() {
             <div className="p-5 bg-cyan-500/5 border border-cyan-500/20 rounded-full mb-4 animate-pulse">
               <ShieldAlert size={48} className="text-cyan-400/80" />
             </div>
-            <h3 className="text-lg font-bold text-slate-100 mb-2">Aucun audit n'a été effectué</h3>
+            <h3 className="text-lg font-bold text-slate-100 mb-2">{t.noAuditHeading}</h3>
             <p className="text-slate-400 text-sm max-w-sm mb-6 leading-relaxed">
-              Pour récupérer, analyser et croiser les menaces 0-day de votre système face aux publications de l'API NVD, démarrez l'audit système hors ligne.
+              {t.noAuditDescription}
             </p>
             
             <button 
@@ -114,7 +133,7 @@ export default function ScannerTab() {
               id="start-audit-button"
             >
               <Activity size={18} className="animate-pulse" />
-              LANCER L'AUDIT SYSTÈME REEL
+              {t.btnStartAudit}
             </button>
           </div>
         )}
@@ -129,9 +148,9 @@ export default function ScannerTab() {
               </div>
             </div>
             
-            <h3 className="text-lg font-bold text-white mb-2 font-mono">AUDIT SYSTÈME EN COURS...</h3>
+            <h3 className="text-lg font-bold text-white mb-2 font-mono">{t.scanningText}</h3>
             
-            <div className="w-full max-w-md bg-slate-950/80 border border-slate-800 rounded-lg p-4 font-mono text-xs text-cyan-400 shadow-md">
+            <div className="w-full max-w-md bg-slate-950/85 border border-slate-800 rounded-lg p-4 font-mono text-xs text-cyan-400 shadow-md">
               <div className="flex items-center gap-1.5 text-slate-500 mb-2 border-b border-slate-900 pb-1.5">
                 <Terminal size={12} />
                 <span>Sentinel Core Diagnostic Terminal</span>
@@ -162,9 +181,11 @@ export default function ScannerTab() {
                       <AlertOctagon size={28} className="text-rose-500" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-100 text-base">{vulns.length} Vulnérabilités Réelles Détectées</h3>
+                      <h3 className="font-bold text-slate-100 text-base">
+                        {vulns.length} {vulns.length === 1 ? t.vulnsDetectedSingular : t.vulnsDetectedPlural}
+                      </h3>
                       <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
-                        Ces failles de sécurité majeures n'ont pas encore été colmatées par votre microcode ni par votre niveau de correctif actuel.
+                        {t.vulnsDetectedDesc}
                       </p>
                     </div>
                   </>
@@ -174,9 +195,9 @@ export default function ScannerTab() {
                       <ShieldCheck size={28} className="text-emerald-500 animate-bounce" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-100 text-base text-emerald-400">Votre micro-noyau est parfaitement sain</h3>
+                      <h3 className="font-bold text-slate-100 text-base text-emerald-400">{t.healthyHeading}</h3>
                       <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
-                        Aucune faille Android NVD publiée après votre correctif n'affecte vos primitives système.
+                        {t.healthyDescription}
                       </p>
                     </div>
                   </>
@@ -190,7 +211,7 @@ export default function ScannerTab() {
                     <Search className="absolute left-3.5 top-3.5 text-slate-500" size={18} />
                     <input 
                       type="text" 
-                      placeholder="Filtrer les failles par ID, description ou composant (ex: Hardware, Linux, Qualcomm...)" 
+                      placeholder={t.searchPlaceholder} 
                       className="w-full bg-slate-900/60 border border-slate-800 p-3.5 pl-11 rounded-xl font-mono text-xs outline-none focus:border-cyan-500/60 text-slate-200 transition-colors"
                       value={searchFilter} 
                       onChange={e => setSearchFilter(e.target.value)}
@@ -225,7 +246,7 @@ export default function ScannerTab() {
                         
                         <div className="flex items-center gap-2 pl-2 mt-1">
                           <span className="inline-block px-2 py-0.5 bg-cyan-950 border border-cyan-900/50 text-[10px] text-cyan-400 font-mono rounded">
-                            Couche: {v.component}
+                            {t.layerTitle}: {v.component}
                           </span>
                         </div>
                       </motion.div>
@@ -233,7 +254,7 @@ export default function ScannerTab() {
                     
                     {filteredVulns.length === 0 && (
                       <div className="text-center text-slate-500 font-mono text-xs py-8" id="no-filtered-results">
-                        Aucune vulnérabilité ne correspond à vos critères de filtrage.
+                        {t.noResults}
                       </div>
                     )}
                   </div>

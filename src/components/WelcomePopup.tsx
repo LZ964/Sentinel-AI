@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Cpu, Database } from 'lucide-react';
+import { translations, Language } from '../lib/translations';
 
 interface WelcomePopupProps {
   isOpen: boolean;
@@ -10,6 +11,9 @@ interface WelcomePopupProps {
 
 export const WelcomePopup: React.FC<any> = ({ isOpen, onClose, onSelect }) => {
   if (!isOpen) return null;
+
+  const currentLang = (localStorage.getItem('sentinel_language') as Language) || 'FR';
+  const t = translations[currentLang];
 
   return (
     <AnimatePresence>
@@ -24,12 +28,12 @@ export const WelcomePopup: React.FC<any> = ({ isOpen, onClose, onSelect }) => {
           <div className="flex items-center mb-4 border-b border-slate-800 pb-3" id="welcome-popup-header">
             <ShieldAlert className="text-cyan-400 mr-3" size={28} id="welcome-popup-icon" />
             <h2 className="text-2xl font-bold text-slate-100" id="welcome-popup-title">
-              Configuration de l'Analyse IA <span className="sr-only">Local AI Core Setup</span>
+              {t.popupTitle} <span className="sr-only">Local AI Core Setup</span>
             </h2>
           </div>
           
           <p className="text-slate-300 text-sm mb-6" id="welcome-popup-description">
-            Sentinel Security AI opère 100% hors ligne pour garantir une confidentialité absolue (aucune télémétrie externe). Veuillez configurer votre moteur de détection local avant le scan.
+            {t.popupDescription}
           </p>
 
           <div className="space-y-4" id="welcome-popup-options">
@@ -41,14 +45,14 @@ export const WelcomePopup: React.FC<any> = ({ isOpen, onClose, onSelect }) => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
                   <Database className="text-rose-500 mr-2" size={20} />
-                  <h3 className="text-rose-400 font-bold">Expert Model (Recommandé)</h3>
+                  <h3 className="text-rose-400 font-bold">{t.optExpertTitle}</h3>
                 </div>
                 <span className="text-red-500 font-black text-lg bg-red-500/10 px-2 py-1 rounded">
                   2.0 GB
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Télécharge un LLM local puissant pour l'analyse heuristique avancée des logs et la détection des failles complexes liées à l'architecture matérielle.
+                {t.optExpertDesc}
               </p>
             </div>
 
@@ -59,10 +63,10 @@ export const WelcomePopup: React.FC<any> = ({ isOpen, onClose, onSelect }) => {
             >
               <div className="flex items-center mb-2">
                 <Cpu className="text-cyan-400 mr-2" size={20} />
-                <h3 className="text-cyan-100 font-bold">Fallback Model</h3>
+                <h3 className="text-cyan-100 font-bold">{t.optFallbackTitle}</h3>
               </div>
               <p className="text-xs text-slate-400">
-                Analyse basique (règles légères type Nano). Analyse superficielle mais aucun téléchargement requis.
+                {t.optFallbackDesc}
               </p>
             </div>
           </div>
