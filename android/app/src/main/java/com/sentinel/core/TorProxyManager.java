@@ -35,7 +35,7 @@ public class TorProxyManager {
                 torProcess = pb.start();
                 Log.i(TAG, "Tor Daemon Process Started successfully.");
             } else {
-                Log.e(TAG, "libtor.so not found in nativeLibraryDir. Expected for AI Studio preview. Must inject during final build.");
+                Log.e(TAG, "libtor.so not found in nativeLibraryDir. Expected for development fallback. Must inject during final build.");
                 throw new RuntimeException("libtor.so non trouvé. Le build final (CI/CD) doit inclure Tor en tant que JNI (jniLibs).");
             }
         } catch (Exception e) {
