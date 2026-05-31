@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Sentinel Security AI",
+  "description": "A highly polished, offline-first Android Security Audit and Threat Detection suite.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

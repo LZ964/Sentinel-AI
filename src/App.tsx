@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Shield, ShieldAlert, Terminal, Lock, Activity } from "lucide-react";
+import { Shield, ShieldAlert, Terminal, Lock, Activity, Globe } from "lucide-react";
 import ScannerTab from "./components/ScannerTab";
 import AntiMalwareTab from "./components/AntiMalwareTab";
 import FirewallTab from "./components/FirewallTab";
 import AdbTab from "./components/AdbTab";
+import ProxyTab from "./components/ProxyTab";
 
-type TabId = "scanner" | "antimalware" | "firewall" | "adb";
+type TabId = "scanner" | "antimalware" | "firewall" | "proxy" | "adb";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("scanner");
@@ -31,6 +32,13 @@ export default function App() {
       icon: Lock,
       color: "text-blue-400 hover:text-blue-300",
       activeColor: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+    },
+    {
+      id: "proxy" as TabId,
+      label: "VPN & Tor",
+      icon: Globe,
+      color: "text-purple-400 hover:text-purple-300",
+      activeColor: "bg-purple-500/10 text-purple-400 border-purple-500/30",
     },
     {
       id: "adb" as TabId,
@@ -73,6 +81,7 @@ export default function App() {
           {activeTab === "scanner" && <ScannerTab />}
           {activeTab === "antimalware" && <AntiMalwareTab />}
           {activeTab === "firewall" && <FirewallTab />}
+          {activeTab === "proxy" && <ProxyTab />}
           {activeTab === "adb" && <AdbTab />}
         </div>
       </main>
