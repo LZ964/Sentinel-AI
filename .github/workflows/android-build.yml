@@ -45,23 +45,43 @@ jobs:
           echo "======================================"
           echo "1. Building WireGuard Android..."
           echo "======================================"
-          git clone --depth 1 https://github.com/WireGuard/wireguard-android.git wireguard-src
+          git clone https://github.com/WireGuard/wireguard-android.git wireguard-src
           cd wireguard-src
-          ./gradlew :tunnel:assembleRelease || echo "WireGuard build failed, continuing anyway"
-          find . -name "*.aar" -exec cp {} ../android/app/libs/wireguard-tunnel.aar \;
+          git submodule update --init --recursive
+          ./gradlew :tunnel:assembleRelease --no-configuration-cache || true
+          find . -type f -name "*.aar" -not -path "*/ui/*" -exec cp {} ../android/app/libs/wireguard-tunnel.aar \;
           cd ..
           rm -rf wireguard-src
           
           echo "======================================"
           echo "2. Building Tor Android..."
           echo "======================================"
-          git clone --depth 1 https://github.com/guardianproject/tor-android.git tor-src
+          git clone https://github.com/guardianproject/tor-android.git tor-src
           cd tor-src
           git submodule update --init --recursive
-          ./gradlew assembleRelease || echo "Tor build failed, continuing anyway"
-          find . -name "*.aar" -exec cp {} ../android/app/libs/tor-android.aar \;
+          
+          cat << 'EOF' > ../init.gradle
+          allprojects {
+              buildscript {
+                  repositories {
+                      mavenCentral()
+                      google()
+                  }
+              }
+              repositories {
+                  mavenCentral()
+                  google()
+                  maven { url 'https://jitpack.io' }
+                  maven { url 'https://raw.githubusercontent.com/guardianproject/gpmaven/master' }
+              }
+          }
+          EOF
+          
+          ./gradlew assembleRelease --init-script ../init.gradle --no-configuration-cache || true
+          find . -type f -name "*.aar" -not -path "*/sample*/*" -exec cp {} ../android/app/libs/tor-android.aar \;
           cd ..
           rm -rf tor-src
+          rm -f init.gradle
           
           echo "======================================"
           echo "Dependencies placed in libs directory:"
