@@ -4,10 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sentinel Security AI</title>
-    <script type="module" crossorigin src="/assets/index-B7WGvnxh.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-ywdqZGAQ.css">
+    <style>
+      #error-container {
+        display: none;
+        padding: 20px;
+        color: #f87171;
+        background-color: #1e1b4b;
+        height: 100vh;
+        font-family: monospace;
+      }
+    </style>
+    <script>
+      window.addEventListener('error', function(e) {
+        var errBox = document.getElementById('error-container');
+        if (errBox) {
+          errBox.style.display = 'block';
+          errBox.innerHTML += '<div>' + (e.error ? e.error.stack : e.message) + '</div>';
+        }
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var errBox = document.getElementById('error-container');
+        if (errBox) {
+          errBox.style.display = 'block';
+          errBox.innerHTML += '<div>' + (e.reason ? e.reason.stack || e.reason : 'Unhandled Promise Rejection') + '</div>';
+        }
+      });
+    </script>
+    <script type="module" crossorigin src="./assets/index-Co7LEfwE.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Dmb3v31c.css">
   </head>
   <body>
+    <div id="error-container"><h2>Initialization Error</h2></div>
     <div id="root"></div>
   </body>
 </html>

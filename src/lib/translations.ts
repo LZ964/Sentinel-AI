@@ -6,7 +6,7 @@ export interface TranslationSchema {
   subTitle: string;
   secureStatus: string;
   tabScanner: string;
-  tabAntivirus: string;
+  tabBehaviorGuard: string;
   tabFirewall: string;
   tabProxy: string;
   tabAdb: string;
@@ -46,11 +46,11 @@ export interface TranslationSchema {
 
 export const translations: Record<Language, TranslationSchema> = {
   FR: {
-    appTitle: "Sentinel Security AI",
+    appTitle: "Prism Guard AI",
     subTitle: "Cœurs Natifs Actifs",
     secureStatus: "SÉCURISÉ",
     tabScanner: "Audit IA",
-    tabAntivirus: "Antivirus",
+    tabBehaviorGuard: "Behavior Guard",
     tabFirewall: "Firewall",
     tabProxy: "VPN & Tor",
     tabAdb: "Logs ADB",
@@ -67,7 +67,7 @@ export const translations: Record<Language, TranslationSchema> = {
     noAuditDescription: "Pour récupérer, analyser et croiser les menaces 0-day de votre système face aux publications de l'API NVD, démarrez l'audit système hors ligne.",
     scanningText: "AUDIT SYSTÈME EN COURS...",
     scanningNvd: "Analyse en cours...",
-    terminalHeader: "Sentinel Core Diagnostic Terminal",
+    terminalHeader: "Prism Guard Diagnostic Terminal",
     terminalSub: "INFO: Bootstrapping diagnostic sandbox",
     vulnsDetectedSingular: "Vulnérabilité Réelle Détectée",
     vulnsDetectedPlural: "Vulnérabilités Réelles Détectées",
@@ -79,18 +79,18 @@ export const translations: Record<Language, TranslationSchema> = {
     noResults: "Aucune vulnérabilité ne correspond à vos critères de filtrage.",
 
     popupTitle: "Configuration de l'Analyse IA",
-    popupDescription: "Sentinel Security AI opère 100% hors ligne pour garantir une confidentialité absolue (aucune télémétrie externe). Veuillez configurer votre moteur de détection local avant le scan.",
+    popupDescription: "Prism Guard opère 100% hors ligne pour garantir une confidentialité absolue (aucune télémétrie externe). Veuillez configurer votre moteur de détection local avant le scan.",
     optExpertTitle: "Expert Model (Recommandé)",
     optExpertDesc: "Télécharge un LLM local puissant pour l'analyse heuristique avancée des logs et la détection des failles complexes liées à l'architecture matérielle.",
     optFallbackTitle: "Fallback Model",
     optFallbackDesc: "Analyse basique (règles légères type Nano). Analyse superficielle mais aucun téléchargement requis.",
   },
   EN: {
-    appTitle: "Sentinel Security AI",
+    appTitle: "Prism Guard AI",
     subTitle: "Active Native Cores",
     secureStatus: "SECURE",
     tabScanner: "AI Audit",
-    tabAntivirus: "Antivirus",
+    tabBehaviorGuard: "Behavior Guard",
     tabFirewall: "Firewall",
     tabProxy: "VPN & Tor",
     tabAdb: "ADB Logs",
@@ -107,7 +107,7 @@ export const translations: Record<Language, TranslationSchema> = {
     noAuditDescription: "To fetch, analyze, and cross-reference 0-day threats with NVD API releases on your device, start the offline system audit.",
     scanningText: "SYSTEM AUDIT IN PROGRESS...",
     scanningNvd: "Analyzing...",
-    terminalHeader: "Sentinel Core Diagnostic Terminal",
+    terminalHeader: "Prism Guard Diagnostic Terminal",
     terminalSub: "INFO: Bootstrapping diagnostic sandbox",
     vulnsDetectedSingular: "Real Vulnerability Detected",
     vulnsDetectedPlural: "Real Vulnerabilities Detected",
@@ -119,18 +119,18 @@ export const translations: Record<Language, TranslationSchema> = {
     noResults: "No vulnerabilities match your filter criteria.",
 
     popupTitle: "AI Analysis Configuration",
-    popupDescription: "Sentinel Security AI runs 100% offline to guarantee absolute privacy (no external telemetry). Please configure your local engine before scanning.",
+    popupDescription: "Prism Guard runs 100% offline to guarantee absolute privacy (no external telemetry). Please configure your local engine before scanning.",
     optExpertTitle: "Expert Model (Recommended)",
     optExpertDesc: "Deploys a powerful local LLM for advanced heuristic log analysis and hardware vulnerability cross-referencing.",
     optFallbackTitle: "Fallback Model",
     optFallbackDesc: "Basic security analysis (lightweight Nano-like rules). Superficial heuristics but requires zero downloading.",
   },
   ES: {
-    appTitle: "Sentinel Security AI",
+    appTitle: "Prism Guard AI",
     subTitle: "Núcleos Nativos Activos",
     secureStatus: "SEGURO",
     tabScanner: "Auditoría IA",
-    tabAntivirus: "Antivirus",
+    tabBehaviorGuard: "Behavior Guard",
     tabFirewall: "Firewall",
     tabProxy: "VPN y Tor",
     tabAdb: "Registros ADB",
@@ -147,7 +147,7 @@ export const translations: Record<Language, TranslationSchema> = {
     noAuditDescription: "Para recuperar, analizar y correlacionar amenazas 0-day de su sistema según las publicaciones de la API NVD, inicie la auditoría sin conexión.",
     scanningText: "AUDITORÍA DE SISTEMA EN CURSO...",
     scanningNvd: "Analizando...",
-    terminalHeader: "Sentinel Core Diagnostic Terminal",
+    terminalHeader: "Prism Guard Diagnostic Terminal",
     terminalSub: "INFO: Bootstrapping diagnostic sandbox",
     vulnsDetectedSingular: "Vulnerabilidad Real Detectada",
     vulnsDetectedPlural: "Vulnerabilidades Reales Detectadas",
@@ -159,7 +159,7 @@ export const translations: Record<Language, TranslationSchema> = {
     noResults: "Ninguna vulnerabilidad coincide con sus criterios de búsqueda.",
 
     popupTitle: "Configuración de Análisis de IA",
-    popupDescription: "Sentinel Security AI opera 100% fuera de línea para garantizar privacidad absoluta (sin telemetría externa). Inicie su motor local antes de escanear.",
+    popupDescription: "Prism Guard opera 100% fuera de línea para garantizar privacidad absoluta (sin telemetría externa). Inicie su motor local antes de escanear.",
     optExpertTitle: "Módulo Experto (Recomendado)",
     optExpertDesc: "Usa un LLM local avanzado para el análisis heurístico de registros y correspondencia de vulnerabilidades a nivel de hardware.",
     optFallbackTitle: "Módulo de Emergencia",

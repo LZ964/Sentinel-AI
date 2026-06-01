@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { registerPlugin } from '@capacitor/core';
+import { registerPlugin, Capacitor } from '@capacitor/core';
 import { Shield, ShieldAlert, Activity, Terminal, Power, Search, AlertOctagon, BrainCircuit, Globe, Play, Square, Settings, Database, Server, Filter, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AiEngine } from '../lib/AiEngine';
@@ -24,10 +24,45 @@ export default function FirewallTab() {
   const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
+  // Web Preview Mock Data Generator
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) return;
+    
+    // In web preview, generate some mock logs if firewall is "enabled"
+    let interval: any;
+    if (fwEnabled) {
+      interval = setInterval(() => {
+        const isBlock = Math.random() > 0.8;
+        const log = {
+          id: Math.random().toString(36).substring(7),
+          action: isBlock ? 'BLOCK' : 'ALLOW',
+          protocol: Math.random() > 0.5 ? 'TCP' : 'UDP',
+          ip: `192.168.1.${Math.floor(Math.random() * 255)}`,
+          domain: isBlock ? 'tracker.bad-domain.com' : 'api.exemple.fr',
+          timestamp: Date.now()
+        };
+        
+        setNetworkLogs(prev => [log, ...prev].slice(0, 100));
+        
+        if (isBlock) {
+          setIsAiLoading(true);
+          setTimeout(() => {
+            setAiRecommendation(`Ce domaine est connu pour la collecte massive de métadonnées. L'accès a été bloqué par le filtre.`);
+            setIsAiLoading(false);
+          }, 1000);
+        }
+      }, 5000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [fwEnabled]);
+
   useEffect(() => {
     let listener: any;
     
     const setupListener = async () => {
+      if (!Capacitor.isNativePlatform()) return; // Don't try to add listener on Web
+      
       // Listen to native plugin events
       listener = await SentinelFirewall.addListener('onNetworkLog', async (data: any) => {
         setNetworkLogs(prev => [{ ...data, id: Math.random().toString(36).substring(7) }, ...prev].slice(0, 100));
@@ -56,11 +91,15 @@ export default function FirewallTab() {
   const toggleFirewall = async () => {
     try {
       const newState = !fwEnabled;
-      const res = await SentinelFirewall.enableFirewall({ enabled: newState });
-      setFwEnabled(res.status);
+      if (Capacitor.isNativePlatform()) {
+        const res = await SentinelFirewall.enableFirewall({ enabled: newState });
+        setFwEnabled(res.status);
+      } else {
+        // Fallback for web preview
+        setFwEnabled(newState);
+      }
     } catch (e) {
       console.error("Firewall toggle failed:", e);
-      // Fallback for web preview testing
       setFwEnabled(!fwEnabled);
     }
   };
@@ -76,7 +115,7 @@ export default function FirewallTab() {
           </div>
           <div>
             <h2 className="text-xl font-display font-medium text-white tracking-tight flex items-center mb-1">
-              Sentinel VpnService Engine
+              Prism Guard VpnService Engine
             </h2>
             <p className="text-slate-400 text-xs">
               Moteur de bouclage local (Loopback) avec Filtre de Bloom (0 Mo).

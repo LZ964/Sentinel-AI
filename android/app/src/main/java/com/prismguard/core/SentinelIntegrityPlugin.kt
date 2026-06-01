@@ -1,4 +1,4 @@
-package com.sentinel.core
+package com.prismguard.core
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo

@@ -1,4 +1,4 @@
-package com.sentinel.core
+package com.prismguard.core
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

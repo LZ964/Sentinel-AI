@@ -28,7 +28,7 @@ export default function AdbTab() {
   return (
     <div className="h-full w-full bg-black text-green-500 font-mono p-4 overflow-y-auto">
       <div className="mb-4 text-slate-400 border-b border-slate-800 pb-2 text-xs">
-        GNU/Linux Terminal - Sentinel ADB Bridge
+        GNU/Linux Terminal - Prism Guard ADB Bridge
       </div>
       
       {logs.map((log, idx) => (

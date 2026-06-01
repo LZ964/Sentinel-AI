@@ -1,4 +1,52 @@
 export class AiEngine {
+  static async analyzeAppBehavior(appName: string, permissions: string[], domains: string[]): Promise<{score: string, explanation: string}> {
+    const engine = localStorage.getItem('sentinel_ai_engine') || 'fallback';
+    const permsStr = permissions.join(', ');
+    const domainsStr = domains.join(', ');
+
+    if (engine === 'expert' && 'ai' in window) {
+      const windowAi = (window as any).ai;
+      let session;
+      
+      try {
+        if (windowAi.languageModel) {
+          session = await windowAi.languageModel.create();
+        } else if (windowAi.assistant) {
+          session = await windowAi.assistant.create();
+        }
+      } catch (e) {
+        console.warn("AI prompt API failed to create session", e);
+      }
+
+      if (session) {
+        try {
+          const prompt = `Analyse l'application "${appName}". Permissions: ${permsStr}. Domaines contactés: ${domainsStr}. Réponds au format JSON strict: {"score": "Faible"|"Moyen"|"Critique", "explanation": "..."}`;
+          const result = await session.prompt(prompt);
+          if (session.destroy) session.destroy();
+          try {
+            const parsed = JSON.parse(result.replace(/```json/g, '').replace(/```/g, ''));
+            if (parsed.score && parsed.explanation) return parsed;
+          } catch(err) {
+            console.warn("Failed to parse AI JSON", result);
+          }
+        } catch (e) {
+          console.warn("AI prompt API session failed to answer", e);
+        }
+      }
+    }
+
+    // Fallback heuristic behavior analysis
+    let score = "Faible";
+    if (permissions.length > 5 || domains.length > 0) score = "Moyen";
+    if (permissions.some(p => p.toLowerCase().includes("sms") || p.toLowerCase().includes("contacts")) && !appName.toLowerCase().includes("message")) {
+      score = "Critique";
+    }
+
+    return {
+      score,
+      explanation: `L'application a demandé ${permissions.length} permissions et contacte ${domains.length} domaines. Score de risque calculé: ${score}.`
+    };
+  }
   static async analyzeNetworkThreat(domain: string, protocol: string): Promise<string> {
     const engine = localStorage.getItem('sentinel_ai_engine') || 'fallback';
 

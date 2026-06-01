@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Shield, ShieldAlert, Terminal, Lock, Activity, Globe } from "lucide-react";
 import { translations, Language } from "./lib/translations";
 import ScannerTab from "./components/ScannerTab";
-import AntiMalwareTab from "./components/AntiMalwareTab";
+import BehaviorGuardTab from "./components/BehaviorGuardTab";
 import FirewallTab from "./components/FirewallTab";
 import AdbTab from "./components/AdbTab";
 import ProxyTab from "./components/ProxyTab";
 
-type TabId = "scanner" | "antimalware" | "firewall" | "proxy" | "adb";
+type TabId = "scanner" | "behaviorguard" | "firewall" | "proxy" | "adb";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("scanner");
@@ -27,8 +27,8 @@ export default function App() {
       activeColor: "bg-rose-500/10 text-rose-400 border-rose-500/30",
     },
     {
-      id: "antimalware" as TabId,
-      label: t.tabAntivirus,
+      id: "behaviorguard" as TabId,
+      label: t.tabBehaviorGuard,
       icon: Shield,
       color: "text-emerald-400 hover:text-emerald-300",
       activeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
@@ -154,7 +154,7 @@ export default function App() {
       <main className="flex-1 overflow-y-auto pb-24 md:pb-6">
         <div className="max-w-4xl mx-auto px-4 py-4">
           {activeTab === "scanner" && <ScannerTab />}
-          {activeTab === "antimalware" && <AntiMalwareTab />}
+          {activeTab === "behaviorguard" && <BehaviorGuardTab />}
           {activeTab === "firewall" && <FirewallTab />}
           {activeTab === "proxy" && <ProxyTab />}
           {activeTab === "adb" && <AdbTab />}

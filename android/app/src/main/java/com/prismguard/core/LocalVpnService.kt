@@ -1,4 +1,4 @@
-package com.sentinel.core
+package com.prismguard.core
 
 import android.app.Notification
 import android.app.NotificationChannel

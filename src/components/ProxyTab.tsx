@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { registerPlugin } from '@capacitor/core';
+import { registerPlugin, Capacitor } from '@capacitor/core';
 import { Shield, Network, Terminal, Power, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -28,7 +28,9 @@ export default function ProxyTab() {
       setConnectionState('disconnected');
       setActiveTunnel('none');
       addLog(`Tunnel ${type.toUpperCase()} déconnecté.`);
-      await SentinelTunnel.configureTunnel({ type: 'none' });
+      if (Capacitor.isNativePlatform()) {
+        await SentinelTunnel.configureTunnel({ type: 'none' });
+      }
       return;
     }
 
@@ -37,13 +39,20 @@ export default function ProxyTab() {
     setActiveTunnel(type);
 
     try {
-      const res = await SentinelTunnel.configureTunnel({ type });
-      if (res.status === 'connected') {
-        setConnectionState('connected');
-        addLog(res.message || `Connecté au réseau ${type.toUpperCase()}.`);
+      if (Capacitor.isNativePlatform()) {
+        const res = await SentinelTunnel.configureTunnel({ type });
+        if (res.status === 'connected') {
+          setConnectionState('connected');
+          addLog(res.message || `Connecté au réseau ${type.toUpperCase()}.`);
+        } else {
+          setConnectionState('error');
+          addLog(`Erreur de connexion : ${res.message}`);
+        }
       } else {
-        setConnectionState('error');
-        addLog(`Erreur de connexion : ${res.message}`);
+        // Mock connection for web preview
+        await new Promise(r => setTimeout(r, 1500));
+        setConnectionState('connected');
+        addLog(`Mock: Connecté au réseau ${type.toUpperCase()} via Web Preview.`);
       }
     } catch (e: any) {
       setConnectionState('error');

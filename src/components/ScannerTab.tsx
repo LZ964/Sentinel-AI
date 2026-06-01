@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Activity, Terminal, AlertOctagon, Smartphone, Filter, Cpu, Database, Search, ShieldAlert, CheckCircle, BrainCircuit } from 'lucide-react';
-import { registerPlugin } from '@capacitor/core';
+import { registerPlugin, Capacitor } from '@capacitor/core';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SentinelIntegrity = registerPlugin<any>('SentinelIntegrity');
@@ -28,24 +28,36 @@ export default function ScannerTab() {
     setScanStep('Calling Google Play Core StandardIntegrityManager...');
     
     try {
-      const data = await SentinelIntegrity.checkIntegrity({});
-      setIntegrityData(data);
+      if (Capacitor.isNativePlatform()) {
+        const data = await SentinelIntegrity.checkIntegrity({});
+        setIntegrityData(data);
+      } else {
+        // Fallback for web preview testing if native plugin is not available
+        await new Promise(r => setTimeout(r, 1000));
+        setIntegrityData({
+          devOptionsEnabled: false,
+          adbEnabled: false,
+          sideloadingEnabled: true,
+          meetsBasicIntegrity: true,
+          meetsDeviceIntegrity: true,
+          suspiciousApps: [
+            {
+              appName: "Example Messaging App",
+              packageName: "com.example.messaging",
+              criticalPermissions: ["READ_SMS", "RECORD_AUDIO", "CAMERA"]
+            }
+          ]
+        });
+      }
     } catch (e) {
       console.error(e);
-      // Fallback for web preview testing if native plugin fails
       setIntegrityData({
         devOptionsEnabled: false,
         adbEnabled: false,
         sideloadingEnabled: true,
         meetsBasicIntegrity: true,
         meetsDeviceIntegrity: true,
-        suspiciousApps: [
-          {
-            appName: "Example Messaging App",
-            packageName: "com.example.messaging",
-            criticalPermissions: ["READ_SMS", "RECORD_AUDIO", "CAMERA"]
-          }
-        ]
+        suspiciousApps: []
       });
     }
 
@@ -64,7 +76,7 @@ export default function ScannerTab() {
           </div>
           <div>
             <h2 className="text-xl font-display font-medium text-white tracking-tight flex items-center mb-1">
-              Sentinel App Scanner & Integrity
+              Prism Guard App Scanner & Integrity
             </h2>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
               Audit profond du système Android (Settings.Global, Google Play Core) et des permissions abusives.
@@ -107,7 +119,7 @@ export default function ScannerTab() {
             <div className="w-full max-w-lg bg-slate-950/90 border border-slate-800/80 rounded-xl p-4 font-mono text-[11px] text-cyan-400 shadow-xl">
               <div className="flex items-center gap-1.5 text-slate-500 mb-2 border-b border-slate-900 pb-1.5">
                 <Terminal size={12} />
-                <span>Sentinel Core Cyberdeck Diagnostic</span>
+                <span>Prism Guard Core Cyberdeck Diagnostic</span>
               </div>
               <div className="space-y-1">
                 <div className="text-cyan-400 animate-pulse">{"\u003E\u003E\u003E"} {scanStep}</div>

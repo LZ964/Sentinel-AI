@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class SecurityBridge(private val context: MainActivity) {
-        private val scanner = AntiMalwareScanner(context)
         private val disinfectionManager = DisinfectionManager(context)
         private val aiDiagnosticManager = LocalAIDiagnosticManager(context)
 
@@ -177,33 +176,6 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     Log.e("SecurityBridge", "Error listing apps", e)
                 }
-            }
-        }
-        @JavascriptInterface
-        fun startNativeScan() {
-            // Forward real scan events back to JS
-            CoroutineScope(Dispatchers.Main).launch {
-                scanner.scanMemoryAndFiles(object : AntiMalwareScanner.ScanCallback {
-                    override fun onLog(message: String) {
-                        runOnUiThread {
-                            // Escape single quotes for JS execution
-                            val safeMsg = message.replace("'", "\\'")
-                            webView.evaluateJavascript("window.onNativeLog && window.onNativeLog('\$safeMsg')", null)
-                        }
-                    }
-                    override fun onResult(score: Int, details: String) {
-                        runOnUiThread {
-                            val safeDetails = details.replace("'", "\\'")
-                            webView.evaluateJavascript("window.onNativeScanComplete && window.onNativeScanComplete(\$score, '\$safeDetails')", null)
-                        }
-                    }
-                    override fun onError(error: String) {
-                        runOnUiThread {
-                            val safeError = error.replace("'", "\\'")
-                            webView.evaluateJavascript("window.onNativeError && window.onNativeError('\$safeError')", null)
-                        }
-                    }
-                })
             }
         }
 

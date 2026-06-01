@@ -1,4 +1,4 @@
-package com.sentinel.core
+package com.prismguard.core
 
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin

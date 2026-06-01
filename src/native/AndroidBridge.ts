@@ -3,18 +3,6 @@
  * Ce fichier remplace les données simulées ("mock") par de véritables appels système.
  */
 
-// Mocking Capacitor plugin for web
-export interface AntiMalwareScannerPlugin {
-  startNativeScan(): Promise<void>;
-  addListener(eventName: 'onNativeLog', listenerFunc: (info: { message: string }) => void): any;
-  addListener(eventName: 'onNativeScanComplete', listenerFunc: (info: { score: number, details: string }) => void): any;
-  addListener(eventName: 'onNativeError', listenerFunc: (info: { error: string }) => void): any;
-}
-
-const AntiMalwareScanner: AntiMalwareScannerPlugin = {
-  startNativeScan: async () => {},
-  addListener: () => {},
-} as any;
 
 class SentinelNativeBridge {
   private isNativeEnvironment(): boolean {
@@ -54,38 +42,6 @@ class SentinelNativeBridge {
       window.AndroidBridge.requestInstalledApps();
     } else {
       console.warn(`[Bridge] Production: La liste des applications nécessite l'API PackageManager native.`);
-    }
-  }
-
-  /**
-   * Lance un véritable scan antiviral via l'OS Android
-   */
-  public async startMalwareScan(
-    onLog: (msg: string) => void,
-    onComplete: (score: number, details: string) => void,
-    onError: (err: string) => void
-  ) {
-    if (!this.isNativeEnvironment()) {
-      console.warn("[Bridge] Environnement natif non détecté. Assurez-vous de lancer l'APK compilé.");
-      onError("Environnement natif Android non détecté.");
-      return;
-    }
-
-    try {
-        await AntiMalwareScanner.addListener('onNativeLog', (info) => onLog(info.message));
-        await AntiMalwareScanner.addListener('onNativeScanComplete', (info) => onComplete(info.score, info.details));
-        await AntiMalwareScanner.addListener('onNativeError', (info) => onError(info.error));
-        await AntiMalwareScanner.startNativeScan();
-    } catch(e: any) {
-        // Fallback to legacy window.AndroidBridge if the plugin is not properly registered
-        if (typeof window !== 'undefined' && window.AndroidBridge && window.AndroidBridge.startNativeScan) {
-           window.onNativeLog = onLog;
-           window.onNativeScanComplete = onComplete;
-           window.onNativeError = onError;
-           window.AndroidBridge.startNativeScan();
-        } else {
-           onError("Native scanner initialization error: " + e.message);
-        }
     }
   }
 
