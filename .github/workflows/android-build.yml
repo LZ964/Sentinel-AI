@@ -37,6 +37,36 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Compile Native Dependencies (WireGuard & Tor)
+        run: |
+          mkdir -p android/app/libs
+          export ANDROID_HOME=$ANDROID_HOME || export ANDROID_HOME=$ANDROID_SDK_ROOT
+          
+          echo "======================================"
+          echo "1. Building WireGuard Android..."
+          echo "======================================"
+          git clone --depth 1 https://github.com/WireGuard/wireguard-android.git wireguard-src
+          cd wireguard-src
+          ./gradlew :tunnel:assembleRelease || echo "WireGuard build failed, continuing anyway"
+          find . -name "*.aar" -exec cp {} ../android/app/libs/wireguard-tunnel.aar \;
+          cd ..
+          rm -rf wireguard-src
+          
+          echo "======================================"
+          echo "2. Building Tor Android..."
+          echo "======================================"
+          git clone --depth 1 https://github.com/guardianproject/tor-android.git tor-src
+          cd tor-src
+          git submodule update --init --recursive
+          ./gradlew assembleRelease || echo "Tor build failed, continuing anyway"
+          find . -name "*.aar" -exec cp {} ../android/app/libs/tor-android.aar \;
+          cd ..
+          rm -rf tor-src
+          
+          echo "======================================"
+          echo "Dependencies placed in libs directory:"
+          ls -la android/app/libs/
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 

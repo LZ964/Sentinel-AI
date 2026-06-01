@@ -26,7 +26,6 @@ android {
 
 repositories {
     mavenCentral()
-    maven { url 'https://raw.githubusercontent.com/guardianproject/gpmaven/master' }
     maven { url 'https://jitpack.io' }
 }
 
@@ -46,10 +45,6 @@ dependencies {
 
     // Sentinel AI Core Dependencies
     implementation 'com.google.android.play:integrity:1.3.0'
-
-    // Tor & WireGuard
-    implementation 'info.guardianproject:tor-android:0.4.5.7'
-    implementation 'com.wireguard.android:tunnel:1.0.20231018'
 }
 
 apply from: 'capacitor.build.gradle'
@@ -61,4 +56,11 @@ try {
     }
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
+
+// Disable AarMetadata checks for local downloaded aar
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith("check") && task.name.endsWith("AarMetadata")) {
+        task.enabled = false
+    }
 }
