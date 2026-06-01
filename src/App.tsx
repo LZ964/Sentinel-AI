@@ -153,7 +153,7 @@ export default function App() {
       {/* Main Container */}
       <main className="flex-1 overflow-y-auto pb-24 md:pb-6">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          {activeTab === "scanner" && <ScannerTab language={language} />}
+          {activeTab === "scanner" && <ScannerTab />}
           {activeTab === "antimalware" && <AntiMalwareTab />}
           {activeTab === "firewall" && <FirewallTab />}
           {activeTab === "proxy" && <ProxyTab />}
