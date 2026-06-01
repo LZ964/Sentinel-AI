@@ -6,6 +6,7 @@ import BehaviorGuardTab from "./components/BehaviorGuardTab";
 import FirewallTab from "./components/FirewallTab";
 import AdbTab from "./components/AdbTab";
 import ProxyTab from "./components/ProxyTab";
+import { PrismLogo } from "./components/PrismLogo";
 
 type TabId = "scanner" | "behaviorguard" | "firewall" | "proxy" | "adb";
 
@@ -60,16 +61,16 @@ export default function App() {
     <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 font-sans">
       {/* Top Header Section */}
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="p-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30">
-            <Activity className="h-5 w-5 text-cyan-400 animate-pulse" />
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] flex items-center justify-center">
+            <PrismLogo className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight text-white uppercase">
+            <h1 className="text-base font-bold tracking-tight text-white uppercase bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
               {t.appTitle}
             </h1>
-            <p className="text-[10px] font-mono text-cyan-400/80 uppercase tracking-widest font-semibold flex items-center gap-1">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+            <p className="text-[10px] font-mono text-emerald-400/80 uppercase tracking-widest font-semibold flex items-center gap-1">
+              <span className="inline-block h-1.5 w-1.5 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)] bg-emerald-400 animate-pulse"></span>
               {t.subTitle}
             </p>
           </div>
@@ -79,7 +80,7 @@ export default function App() {
         <div className="relative">
           <button
             onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-            className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-full px-3 py-1.5 hover:border-cyan-500/40 hover:bg-slate-850 transition-all font-mono text-[10px] uppercase font-bold text-slate-300 cursor-pointer active:scale-95"
+            className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-full px-3 py-1.5 hover:border-emerald-500/40 hover:bg-slate-850 transition-all font-mono text-[10px] uppercase font-bold text-slate-300 cursor-pointer active:scale-95"
             aria-haspopup="listbox"
             aria-expanded={isLangMenuOpen}
             id="language-switcher-btn"
@@ -110,7 +111,7 @@ export default function App() {
                     setIsLangMenuOpen(false);
                   }}
                   className={`flex items-center gap-2 w-full text-left px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium transition-all hover:bg-slate-800 cursor-pointer ${
-                    language === "FR" ? "text-cyan-400 bg-cyan-500/5 font-bold" : "text-slate-300"
+                    language === "FR" ? "text-emerald-400 bg-emerald-500/5 font-bold" : "text-slate-300"
                   }`}
                   id="lang-option-fr"
                 >
@@ -124,7 +125,7 @@ export default function App() {
                     setIsLangMenuOpen(false);
                   }}
                   className={`flex items-center gap-2 w-full text-left px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium transition-all hover:bg-slate-800 cursor-pointer ${
-                    language === "EN" ? "text-cyan-400 bg-cyan-500/5 font-bold" : "text-slate-300"
+                    language === "EN" ? "text-emerald-400 bg-emerald-500/5 font-bold" : "text-slate-300"
                   }`}
                   id="lang-option-en"
                 >
@@ -138,7 +139,7 @@ export default function App() {
                     setIsLangMenuOpen(false);
                   }}
                   className={`flex items-center gap-2 w-full text-left px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-medium transition-all hover:bg-slate-800 cursor-pointer ${
-                    language === "ES" ? "text-cyan-400 bg-cyan-500/5 font-bold" : "text-slate-300"
+                    language === "ES" ? "text-emerald-400 bg-emerald-500/5 font-bold" : "text-slate-300"
                   }`}
                   id="lang-option-es"
                 >
